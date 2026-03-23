@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -40,7 +41,9 @@ public class PostController {
         Post post = new Post();
         post.setTitle(dto.getTitle());
         post.setContent(dto.getContent());
-        post.setAuthor(auth.getName()); // ← real username from JWT
+        post.setCoverImage(dto.getCoverImage());
+        post.setTags(dto.getTags() != null ? dto.getTags() : new ArrayList<>());
+        post.setAuthor(auth.getName());
         post.setPublished(true);
         post.setCreatedAt(LocalDateTime.now());
         post.setUpdatedAt(LocalDateTime.now());
@@ -59,11 +62,13 @@ public class PostController {
 
         existing.setTitle(dto.getTitle());
         existing.setContent(dto.getContent());
+        existing.setCoverImage(dto.getCoverImage());
+        existing.setTags(dto.getTags() != null ? dto.getTags() : new ArrayList<>());
         existing.setUpdatedAt(LocalDateTime.now());
         return ResponseEntity.ok(postService.updatePost(id, existing));
     }
 
-    @DeleteMapping("/{id}")
+        @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id, Authentication auth) {
         Post existing = postService.getPostById(id);
 
