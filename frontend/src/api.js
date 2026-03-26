@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API = axios.create({
   baseURL: "https://blogapp-backend-amwi.onrender.com/api", 
-  baseURL: "http://localhost:8080/api",
+  
 });
 
 // Attach JWT token
