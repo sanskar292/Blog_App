@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { getLoggedInUser } from "../api";
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
 
   :root {
     --ink: #1a1a18;
@@ -12,7 +12,7 @@ const styles = `
     --accent: #c8502a;
     --surface: #fffdf8;
     --border: #e2ded4;
-    --radius: 4px;
+    --radius: 6px;
   }
 
   .nav-bar {
@@ -22,13 +22,14 @@ const styles = `
     background: var(--surface);
     border-bottom: 1px solid var(--border);
     font-family: 'DM Sans', sans-serif;
+    backdrop-filter: blur(8px);
   }
 
   .nav-inner {
-    max-width: 720px;
+    max-width: 840px;
     margin: 0 auto;
     padding: 0 24px;
-    height: 56px;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -36,7 +37,7 @@ const styles = `
 
   .nav-wordmark {
     font-family: 'Instrument Serif', serif;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: 400;
     letter-spacing: -0.02em;
     color: var(--ink);
@@ -49,87 +50,68 @@ const styles = `
   .nav-actions {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
   }
 
   .nav-link {
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-decoration: none;
-    padding: 6px 12px;
-    border-radius: var(--radius);
-    transition: color 0.15s, background 0.15s;
-  }
-  .nav-link:hover { color: var(--ink); background: var(--border); }
-  .nav-link.active { color: var(--ink); }
-
-  /* Write button — pen icon + label */
-  .nav-write {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--muted);
     text-decoration: none;
-    padding: 6px 12px;
+    padding: 8px 14px;
     border-radius: var(--radius);
-    transition: color 0.15s, background 0.15s;
-  }
-  .nav-write:hover { color: var(--ink); background: var(--border); }
-  .nav-write.active { color: var(--ink); }
-
-  .nav-cta {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    background: var(--ink);
-    color: var(--paper);
-    text-decoration: none;
-    padding: 7px 16px;
-    border-radius: var(--radius);
-    border: none;
-    cursor: pointer;
-    transition: background 0.15s;
+    transition: all 0.15s;
     display: inline-flex;
     align-items: center;
+    gap: 6px;
   }
-  .nav-cta:hover { background: #2e2e2b; }
+  .nav-link:hover { color: var(--ink); background: rgba(155, 150, 137, 0.1); }
+  .nav-link.active { color: var(--ink); }
+
+  .nav-write {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--surface);
+    background: var(--ink);
+    text-decoration: none;
+    padding: 9px 18px;
+    border-radius: var(--radius);
+    transition: all 0.15s;
+  }
+  .nav-write:hover { background: #2e2e2b; transform: translateY(-1px); }
+  .nav-write.active { background: #2e2e2b; }
 
   .nav-sep {
-    width: 3px;
-    height: 3px;
-    border-radius: 50%;
+    width: 1px;
+    height: 20px;
     background: var(--border);
-    margin: 0 2px;
+    margin: 0 4px;
   }
 
   .nav-logout {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 500;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     background: none;
     color: var(--muted);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 6px 14px;
+    padding: 8px 16px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    transition: all 0.15s;
   }
-  .nav-logout:hover { color: var(--accent); border-color: #f5c6ba; background: #fef2ef; }
+  .nav-logout:hover { color: var(--accent); border-color: var(--accent); background: rgba(200, 80, 42, 0.05); }
 
   /* Mobile */
   .nav-hamburger {
@@ -137,12 +119,12 @@ const styles = `
     background: none;
     border: none;
     cursor: pointer;
-    padding: 6px;
+    padding: 8px;
     color: var(--ink);
     border-radius: var(--radius);
     transition: background 0.15s;
   }
-  .nav-hamburger:hover { background: var(--border); }
+  .nav-hamburger:hover { background: rgba(155, 150, 137, 0.1); }
 
   .nav-drawer {
     border-top: 1px solid var(--border);
@@ -151,14 +133,14 @@ const styles = `
     max-height: 0;
     transition: max-height 0.3s ease;
   }
-  .nav-drawer.open { max-height: 280px; }
+  .nav-drawer.open { max-height: 320px; }
 
   .nav-drawer-inner {
-    padding: 16px 24px 20px;
+    padding: 20px 24px 24px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    max-width: 720px;
+    gap: 4px;
+    max-width: 840px;
     margin: 0 auto;
   }
 
@@ -167,7 +149,7 @@ const styles = `
     font-weight: 400;
     color: var(--ink);
     text-decoration: none;
-    padding: 8px 0;
+    padding: 12px 0;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -179,12 +161,12 @@ const styles = `
 
   .nav-drawer-logout {
     font-size: 0.85rem;
-    font-weight: 400;
+    font-weight: 500;
     color: var(--accent);
     background: none;
     border: none;
     border-bottom: 1px solid var(--border);
-    padding: 8px 0;
+    padding: 12px 0;
     cursor: pointer;
     text-align: left;
     font-family: 'DM Sans', sans-serif;
@@ -192,9 +174,10 @@ const styles = `
   }
   .nav-drawer-logout:hover { opacity: 0.7; }
 
-  @media (max-width: 600px) {
+  @media (max-width: 640px) {
     .nav-actions  { display: none; }
     .nav-hamburger { display: flex; }
+    .nav-write span { display: none; }
   }
 `;
 
@@ -232,14 +215,17 @@ function AppNavbar() {
           <div className="nav-actions">
             {!token ? (
               <>
-                <Link to="/login" className={`nav-link${isActive("/login") ? " active" : ""}`}>Login</Link>
+                <Link to="/login" className={`nav-link${isActive("/login") ? " active" : ""}`}>
+                  Login
+                </Link>
                 <div className="nav-sep" aria-hidden="true" />
-                <Link to="/register" className="nav-cta">Register</Link>
+                <Link to="/register" className="nav-write">
+                  Register
+                </Link>
               </>
             ) : (
               <>
-                {/* Profile link */}
-                <Link to="/profile" className={`nav-link${isActive("/profile") ? " active" : ""}`} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <Link to="/profile" className={`nav-link${isActive("/profile") ? " active" : ""}`}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -250,14 +236,13 @@ function AppNavbar() {
 
                 <div className="nav-sep" aria-hidden="true" />
 
-                {/* Write button — only when logged in */}
                 <Link to="/create" className={`nav-write${isActive("/create") ? " active" : ""}`}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 20h9"/>
                     <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
                   </svg>
-                  Write
+                  <span>Write</span>
                 </Link>
 
                 <div className="nav-sep" aria-hidden="true" />
@@ -269,7 +254,6 @@ function AppNavbar() {
                     <polyline points="16 17 21 12 16 7"/>
                     <line x1="21" y1="12" x2="9" y2="12"/>
                   </svg>
-                  Logout
                 </button>
               </>
             )}

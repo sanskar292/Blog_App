@@ -2,9 +2,11 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchPostById, fetchComments, createComment, updatePostById, getLoggedInUser } from "../api";
 import DOMPurify from "dompurify";
+import QuillEditor from "../components/QuilEditor";
+import CommentSection from "../components/CommentSection";
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
 
   :root {
     --ink: #1a1a18;
@@ -14,7 +16,7 @@ const styles = `
     --surface: #fffdf8;
     --border: #e2ded4;
     --border-focus: #a8a49a;
-    --radius: 4px;
+    --radius: 8px;
     --success: #3a7d44;
   }
 
@@ -28,9 +30,9 @@ const styles = `
   }
 
   .pd-wrapper {
-    max-width: 680px;
+    max-width: 720px;
     margin: 0 auto;
-    padding: 56px 24px 120px;
+    padding: 40px 24px 80px;
   }
 
   /* ── Reading Progress Bar ── */
@@ -39,7 +41,7 @@ const styles = `
     top: 0;
     z-index: 100;
     width: 100%;
-    height: 4px;
+    height: 3px;
     background: transparent;
   }
 
@@ -55,13 +57,13 @@ const styles = `
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 0.75rem;
-    font-weight: 500;
+    font-size: 0.72rem;
+    font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
     text-decoration: none;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
     transition: color 0.15s;
   }
   .pd-back:hover { color: var(--ink); }
@@ -71,15 +73,16 @@ const styles = `
   /* ── Cover image ── */
   .pd-cover {
     width: 100%;
-    max-height: 380px;
+    max-height: 400px;
     object-fit: cover;
     border-radius: var(--radius);
-    margin-bottom: 40px;
+    margin-bottom: 32px;
     display: block;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   }
 
   /* ── Post header ── */
-  .pd-post { margin-bottom: 56px; }
+  .pd-post { margin-bottom: 48px; }
 
   .pd-post-top {
     display: flex;
@@ -89,45 +92,46 @@ const styles = `
     margin-bottom: 20px;
   }
 
-  .pd-meta { display: flex; flex-direction: column; gap: 6px; }
+  .pd-meta { display: flex; flex-direction: column; gap: 10px; }
 
   .pd-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 
   .pd-tag {
     font-size: 0.68rem;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    background: var(--border);
+    background: rgba(155, 150, 137, 0.15);
     color: var(--muted);
-    padding: 3px 8px;
-    border-radius: 2px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    transition: all 0.15s;
   }
 
   .pd-byline {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 0.78rem;
+    gap: 10px;
+    font-size: 0.8rem;
     color: var(--muted);
     font-weight: 300;
   }
 
-  .pd-byline-author { font-weight: 500; color: var(--ink); }
-  .pd-byline-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--muted); }
+  .pd-byline-author { font-weight: 600; color: var(--ink); }
+  .pd-byline-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border); }
 
   .pd-title {
     font-family: 'Instrument Serif', serif;
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
     font-weight: 400;
-    line-height: 1.15;
+    line-height: 1.2;
     letter-spacing: -0.02em;
     color: var(--ink);
-    margin-bottom: 28px;
+    margin: 20px 0 24px;
   }
 
   .pd-divider {
-    width: 40px;
+    width: 48px;
     height: 2px;
     background: var(--accent);
     margin-bottom: 28px;
@@ -135,30 +139,30 @@ const styles = `
   }
 
   .pd-content {
-    font-size: 1.05rem;
+    font-size: 1.08rem;
     font-weight: 300;
-    line-height: 1.85;
+    line-height: 1.9;
     color: #3a3a37;
   }
 
   .pd-content h1 {
     font-family: 'Instrument Serif', serif;
-    font-size: 2rem;
+    font-size: 1.9rem;
     font-weight: 400;
-    margin: 1.5em 0 0.5em;
+    margin: 1.8em 0 0.6em;
     color: var(--ink);
   }
 
   .pd-content h2 {
     font-family: 'Instrument Serif', serif;
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: 400;
-    margin: 1.5em 0 0.5em;
+    margin: 1.6em 0 0.6em;
     color: var(--ink);
   }
 
   .pd-content p {
-    margin: 1em 0;
+    margin: 1.2em 0;
   }
 
   .pd-content strong {
@@ -172,13 +176,13 @@ const styles = `
 
   .pd-content ul,
   .pd-content ol {
-    margin: 1em 0;
+    margin: 1.2em 0;
     padding-left: 2em;
   }
 
   .pd-content li {
-    margin: 0.5em 0;
-    line-height: 1.8;
+    margin: 0.6em 0;
+    line-height: 1.85;
   }
 
   .pd-content a {
@@ -188,17 +192,17 @@ const styles = `
 
   .pd-content blockquote {
     border-left: 3px solid var(--accent);
-    padding-left: 1em;
-    margin: 1em 0;
+    padding-left: 1.2em;
+    margin: 1.4em 0;
     font-style: italic;
     color: var(--muted);
   }
 
   .pd-content code {
-    background: var(--code-bg, #f4f3ec);
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-family: var(--mono, ui-monospace, Consolas, monospace);
+    background: rgba(155, 150, 137, 0.15);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: ui-monospace, Consolas, monospace;
     font-size: 0.9em;
   }
 
@@ -209,16 +213,16 @@ const styles = `
     align-items: center;
     gap: 6px;
     font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
+    font-weight: 600;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    background: none;
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 6px 12px;
+    padding: 7px 14px;
     color: var(--muted);
     cursor: pointer;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    transition: all 0.15s;
   }
   .pd-edit-btn:hover { color: var(--ink); border-color: var(--ink); background: var(--paper); }
 
@@ -232,10 +236,10 @@ const styles = `
     font-size: 0.9rem;
     font-weight: 300;
     color: var(--ink);
-    background: var(--paper);
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 10px 14px;
+    padding: 11px 14px;
     outline: none;
     width: 100%;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -257,16 +261,16 @@ const styles = `
   .pd-edit-textarea:focus,
   .pd-edit-url:focus {
     border-color: var(--border-focus);
-    box-shadow: 0 0 0 3px rgba(168,164,154,0.15);
+    box-shadow: 0 0 0 3px rgba(168, 164, 154, 0.12);
   }
 
   .pd-edit-label {
     font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: -8px;
+    margin-bottom: -6px;
   }
 
   .pd-edit-actions {
@@ -277,15 +281,15 @@ const styles = `
 
   .pd-edit-save {
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     background: var(--ink);
-    color: var(--paper);
+    color: var(--surface);
     border: none;
     border-radius: var(--radius);
-    padding: 8px 20px;
+    padding: 9px 20px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -297,157 +301,87 @@ const styles = `
 
   .pd-edit-cancel {
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 500;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    background: none;
+    background: var(--surface);
     color: var(--muted);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 8px 20px;
+    padding: 9px 20px;
     cursor: pointer;
-    transition: color 0.15s, border-color 0.15s;
+    transition: all 0.15s;
   }
   .pd-edit-cancel:hover { color: var(--ink); border-color: var(--ink); }
+
+  /* Quill Editor in Edit Form */
+  .pd-edit-editor-wrapper {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .pd-edit-editor-wrapper:focus-within {
+    border-color: var(--border-focus);
+  }
+
+  .pd-edit-editor-wrapper .ql-toolbar {
+    background: var(--paper);
+    border: none !important;
+    border-bottom: 1px solid var(--border) !important;
+    padding: 10px 12px;
+  }
+
+  .pd-edit-editor-wrapper .ql-toolbar button {
+    color: var(--muted);
+  }
+
+  .pd-edit-editor-wrapper .ql-toolbar button:hover,
+  .pd-edit-editor-wrapper .ql-toolbar button.ql-active {
+    color: var(--ink);
+  }
+
+  .pd-edit-editor-wrapper .ql-toolbar .ql-stroke {
+    stroke: currentColor;
+  }
+
+  .pd-edit-editor-wrapper .ql-toolbar .ql-fill {
+    fill: currentColor;
+  }
+
+  .pd-edit-editor-wrapper .ql-container {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--ink);
+    background: var(--paper);
+    border: none !important;
+    min-height: 320px;
+  }
+
+  .pd-edit-editor-wrapper .ql-editor {
+    padding: 16px 14px;
+    line-height: 1.8;
+  }
+
+  .pd-edit-editor-wrapper .ql-editor.ql-blank::before {
+    color: #c2bdb4;
+    font-style: normal;
+  }
 
   .pd-save-success {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 0.78rem;
+    font-size: 0.75rem;
+    font-weight: 500;
     color: var(--success);
     animation: fadeIn 0.2s ease;
   }
 
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-  /* ── Comments ── */
-  .pd-section-header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    border-bottom: 1.5px solid var(--ink);
-    padding-bottom: 12px;
-    margin-bottom: 24px;
-  }
-
-  .pd-section-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 1.2rem;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-  }
-
-  .pd-comment-count {
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .pd-comments { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
-
-  .pd-comment {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    animation: slideUp 0.3s ease both;
-  }
-
-  .pd-comment-author {
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-
-  .pd-comment-text {
-    font-size: 0.9rem;
-    font-weight: 300;
-    line-height: 1.65;
-    color: var(--ink);
-  }
-
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .pd-no-comments {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 0;
-    gap: 8px;
-    color: var(--muted);
-    margin-bottom: 32px;
-  }
-  .pd-no-comments svg { opacity: 0.3; }
-  .pd-no-comments span { font-size: 0.83rem; }
-
-  /* Comment form */
-  .pd-form { display: flex; flex-direction: column; gap: 10px; }
-
-  .pd-textarea {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 300;
-    color: var(--ink);
-    background: var(--paper);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 12px 14px;
-    min-height: 88px;
-    resize: none;
-    outline: none;
-    line-height: 1.65;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    width: 100%;
-  }
-  .pd-textarea::placeholder { color: #c2bdb4; }
-  .pd-textarea:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(168,164,154,0.15); }
-  .pd-textarea.has-error { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(200,80,42,0.1); }
-
-  .pd-form-footer { display: flex; align-items: center; justify-content: space-between; }
-
-  .pd-form-hint { font-size: 0.75rem; font-weight: 300; color: var(--muted); }
-  .pd-form-hint.error { color: var(--accent); }
-
-  .pd-submit {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    background: var(--ink);
-    color: var(--paper);
-    border: none;
-    border-radius: var(--radius);
-    padding: 9px 22px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: background 0.15s, opacity 0.15s;
-  }
-  .pd-submit:hover:not(:disabled) { background: #2e2e2b; }
-  .pd-submit:disabled { opacity: 0.45; cursor: not-allowed; }
-
-  .pd-spinner {
-    width: 12px; height: 12px;
-    border: 2px solid rgba(245,242,235,0.3);
-    border-top-color: var(--paper);
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
 
   /* Skeleton */
   .pd-skeleton-title {
@@ -482,8 +416,6 @@ const styles = `
   }
 `;
 
-const COMMENT_MAX = 500;
-
 const readTime = (content) => {
   const words = content?.trim().split(/\s+/).length ?? 0;
   return `${Math.max(1, Math.round(words / 200))} min read`;
@@ -511,12 +443,10 @@ function PostDetails() {
 
   const [post,        setPost]        = useState(null);
   const [comments,    setComments]    = useState([]);
-  const [text,        setText]        = useState("");
   const [loading,     setLoading]     = useState(true);
   const [submitting,  setSubmitting]  = useState(false);
   const [loadError,   setLoadError]   = useState(null);
   const [submitError, setSubmitError] = useState(null);
-  const [fieldError,  setFieldError]  = useState(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   const [editing,     setEditing]     = useState(false);
@@ -599,29 +529,6 @@ function PostDetails() {
     }
   };
 
-  const addComment = async () => {
-    if (!text.trim()) { setFieldError("Comment can't be empty."); return; }
-    if (text.length > COMMENT_MAX) { setFieldError(`Keep it under ${COMMENT_MAX} characters.`); return; }
-    setFieldError(null);
-    setSubmitting(true);
-    setSubmitError(null);
-    try {
-      await createComment(id, text.trim());
-      setText("");
-      setComments(prev => [...prev, { id: Date.now(), content: text.trim(), author: currentUser ?? "you" }]);
-    } catch {
-      setSubmitError("Couldn't post comment. Try again.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleKey = (e) => {
-    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) addComment();
-  };
-
-  const nearLimit = text.length > COMMENT_MAX * 0.85;
-
   return (
     <>
       <style>{styles}</style>
@@ -665,12 +572,14 @@ function PostDetails() {
                 onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))}
                 placeholder="Post title"
               />
-              <textarea
-                className="pd-edit-textarea"
-                value={editForm.content}
-                onChange={e => setEditForm(f => ({ ...f, content: e.target.value }))}
-                placeholder="Post content"
-              />
+              <span className="pd-edit-label">Content</span>
+              <div className="pd-edit-editor-wrapper">
+                <QuillEditor
+                  value={editForm.content}
+                  onChange={(content) => setEditForm(f => ({ ...f, content }))}
+                  placeholder="Edit your story…"
+                />
+              </div>
               {saveError && (
                 <div className="pd-error" role="alert" style={{ marginBottom: 0 }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -743,61 +652,26 @@ function PostDetails() {
         </section>
 
         {!loading && !editing && (
-          <>
-            <div className="pd-section-header">
-              <h2 className="pd-section-title">Comments</h2>
-              <span className="pd-comment-count">
-                {comments.length} {comments.length === 1 ? "reply" : "replies"}
-              </span>
-            </div>
-
-            <div className="pd-comments">
-              {comments.length === 0 ? (
-                <div className="pd-no-comments">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                  </svg>
-                  <span>No comments yet — start the conversation.</span>
-                </div>
-              ) : (
-                comments.map((c, i) => (
-                  <div key={c.id ?? c._id} className="pd-comment" style={{ animationDelay: `${i * 0.04}s` }}>
-                    {c.author && <span className="pd-comment-author">{c.author}</span>}
-                    <p className="pd-comment-text">{c.content}</p>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {submitError && (
-              <div className="pd-error" role="alert" style={{ marginBottom: 12 }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-                </svg>
-                {submitError}
-              </div>
-            )}
-
-            <div className="pd-form">
-              <textarea
-                className={`pd-textarea${fieldError ? " has-error" : ""}`}
-                placeholder="Leave a comment… (⌘ + Enter to submit)"
-                value={text}
-                onChange={e => { setText(e.target.value); if (fieldError) setFieldError(null); }}
-                onKeyDown={handleKey}
-                maxLength={COMMENT_MAX + 30}
-                aria-label="Comment text"
-              />
-              <div className="pd-form-footer">
-                <span className={`pd-form-hint${fieldError ? " error" : ""}`}>
-                  {fieldError ? fieldError : nearLimit ? `${text.length} / ${COMMENT_MAX}` : "⌘ + Enter to submit"}
-                </span>
-                <button className="pd-submit" onClick={addComment} disabled={submitting} aria-busy={submitting}>
-                  {submitting ? <><span className="pd-spinner" /> Posting…</> : "Comment"}
-                </button>
-              </div>
-            </div>
-          </>
+          <CommentSection
+            comments={comments}
+            onSubmit={(commentText) => {
+              setSubmitting(true);
+              setSubmitError(null);
+              createComment(id, commentText)
+                .then(() => {
+                  load();
+                })
+                .catch(() => {
+                  setSubmitError("Couldn't post comment. Try again.");
+                })
+                .finally(() => {
+                  setSubmitting(false);
+                });
+            }}
+            loading={submitting}
+            error={submitError}
+            isLoggedIn={!!currentUser}
+          />
         )}
       </div>
     </>

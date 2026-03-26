@@ -1,10 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { fetchPosts, deletePostById, getLoggedInUser } from "../api";
-import DOMPurify from "dompurify";
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
 
   :root {
     --ink: #1a1a18;
@@ -13,7 +12,10 @@ const styles = `
     --accent: #c8502a;
     --surface: #fffdf8;
     --border: #e2ded4;
-    --radius: 4px;
+    --border-dark: #c9c4b8;
+    --radius: 8px;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.08);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,43 +29,58 @@ const styles = `
   }
 
   .home-wrapper {
-    max-width: 720px;
+    max-width: 820px;
     margin: 0 auto;
-    padding: 64px 24px 120px;
+    padding: 48px 24px 80px;
   }
 
   /* ── Header ── */
   .home-header {
-    margin-bottom: 56px;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
   }
 
   .home-title {
     font-family: 'Instrument Serif', serif;
-    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    font-size: clamp(2.2rem, 5vw, 3rem);
     font-weight: 400;
-    letter-spacing: -0.03em;
-    line-height: 1.05;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
     color: var(--ink);
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .home-title em { font-style: italic; color: var(--accent); }
 
+  .home-subtitle {
+    font-size: 0.95rem;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 480px;
+    line-height: 1.6;
+    margin: 0 auto;
+    text-align: center;
+  }
+
   .home-meta {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid var(--border);
-    padding-top: 14px;
+    justify-content: center;
+    gap: 16px;
     margin-top: 16px;
   }
 
   .home-count {
     font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
+    background: rgba(155, 150, 137, 0.1);
+    padding: 5px 12px;
+    border-radius: 20px;
   }
 
   /* ── Error ── */
@@ -75,7 +92,7 @@ const styles = `
     border: 1px solid #f5c6ba;
     border-radius: var(--radius);
     padding: 12px 16px;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
     font-size: 0.85rem;
     color: var(--accent);
   }
@@ -86,25 +103,27 @@ const styles = `
     background: none;
     border: none;
     color: var(--accent);
-    font-size: 1rem;
+    font-size: 1.1rem;
     opacity: 0.7;
     transition: opacity 0.15s;
+    padding: 0;
+    line-height: 1;
   }
+
   .error-dismiss:hover { opacity: 1; }
 
   /* ── Skeleton ── */
-  .skeleton-list { display: flex; flex-direction: column; }
+  .skeleton-list { display: flex; flex-direction: column; gap: 16px; }
 
   .skeleton-item {
-    padding: 28px 0;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
   }
 
   .skeleton-line {
-    height: 14px;
+    height: 12px;
     background: linear-gradient(90deg, var(--border) 25%, #ede9e0 50%, var(--border) 75%);
     background-size: 200% 100%;
     animation: shimmer 1.4s infinite;
@@ -117,120 +136,169 @@ const styles = `
   }
 
   /* ── Post list ── */
-  .post-list { display: flex; flex-direction: column; }
+  .post-list { display: flex; flex-direction: column; gap: 16px; }
 
-  /* ── Medium-style post row ── */
-  .post-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 24px;
-    align-items: start;
-    padding: 28px 0;
-    border-bottom: 1px solid var(--border);
+  /* ── Post Card ── */
+  .post-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    transition: all 0.2s ease;
     text-decoration: none;
     color: inherit;
-    animation: fadeUp 0.4s ease both;
     position: relative;
+    overflow: hidden;
   }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
+  .post-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.25s ease;
   }
 
-  .post-row:first-child { border-top: 1px solid var(--border); }
+  .post-card:hover {
+    border-color: var(--border-dark);
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+  }
 
-  .post-row-body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .post-card:hover::before { transform: scaleY(1); }
 
-  .post-row-top {
+  .post-card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .post-card-top {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
   }
 
-  .post-row-author {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--ink);
-    letter-spacing: 0.02em;
+  .post-card-author {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(200, 80, 42, 0.08);
+    padding: 4px 10px;
+    border-radius: 20px;
   }
 
-  .post-row-dot {
-    width: 3px;
-    height: 3px;
+  .post-card-dot {
+    width: 4px;
+    height: 4px;
     border-radius: 50%;
-    background: var(--muted);
+    background: var(--border-dark);
     flex-shrink: 0;
   }
 
-  .post-row-date {
+  .post-card-date {
     font-size: 0.75rem;
-    font-weight: 300;
     color: var(--muted);
+    font-weight: 300;
   }
 
-  .post-row-title {
+  .post-card-title {
     font-family: 'Instrument Serif', serif;
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     font-weight: 400;
-    line-height: 1.3;
+    line-height: 1.35;
     letter-spacing: -0.01em;
     color: var(--ink);
     transition: color 0.15s;
-  }
-
-  .post-row:hover .post-row-title { color: var(--accent); }
-
-  .post-row-excerpt {
-    font-size: 0.875rem;
-    font-weight: 300;
-    line-height: 1.6;
-    color: var(--muted);
+    margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
-  .post-row-footer {
+  .post-card:hover .post-card-title { color: var(--accent); }
+
+  .post-card-excerpt {
+    font-size: 0.9rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  .post-card-footer {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-top: 4px;
     flex-wrap: wrap;
+    margin-top: 4px;
   }
 
-  .post-row-tag {
-    font-size: 0.7rem;
-    font-weight: 500;
+  .post-card-tag {
+    font-size: 0.68rem;
+    font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     background: var(--border);
     color: var(--muted);
-    padding: 3px 8px;
-    border-radius: 2px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    transition: all 0.15s;
   }
 
-  .post-row-read-time {
+  .post-card:hover .post-card-tag {
+    background: var(--ink);
+    color: var(--surface);
+  }
+
+  .post-card-read-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     font-size: 0.72rem;
-    font-weight: 300;
     color: var(--muted);
+    margin-left: auto;
+    flex-shrink: 0;
   }
 
-  /* Cover image thumbnail */
-  .post-row-thumb {
-    width: 100px;
-    height: 72px;
+  .post-card-read-time svg {
+    opacity: 0.6;
+  }
+
+  .post-card-image {
+    width: 140px;
+    height: 100px;
     object-fit: cover;
     border-radius: var(--radius);
     flex-shrink: 0;
     background: var(--border);
+    box-shadow: var(--shadow);
   }
 
-  .post-row-thumb-placeholder {
-    width: 100px;
-    height: 72px;
+  .post-card-image-placeholder {
+    width: 140px;
+    height: 100px;
     border-radius: var(--radius);
     background: var(--border);
     flex-shrink: 0;
@@ -241,69 +309,80 @@ const styles = `
     opacity: 0.5;
   }
 
-  /* Owner actions */
-  .post-row-actions {
+  .post-card-actions {
     display: flex;
-    gap: 8px;
-    margin-top: 8px;
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
   }
 
-  .post-row-delete {
+  .post-card-action-btn {
     background: none;
     border: none;
     cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
     font-size: 0.7rem;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--muted);
     padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     transition: color 0.15s;
+    text-decoration: none;
   }
-  .post-row-delete:hover { color: var(--accent); }
 
-  /* Confirm inline */
-  .post-row-confirm {
+  .post-card-action-btn:hover { color: var(--ink); }
+  .post-card-action-btn.delete:hover { color: var(--accent); }
+
+  .post-card-confirm {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 0.75rem;
+    gap: 10px;
+    font-size: 0.78rem;
     color: var(--ink);
-    margin-top: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
   }
 
-  .confirm-yes-sm {
+  .confirm-yes {
     font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
+    font-weight: 600;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     background: var(--accent);
     color: #fff;
     border: none;
-    border-radius: 2px;
-    padding: 4px 10px;
+    border-radius: 4px;
+    padding: 6px 14px;
     cursor: pointer;
-    transition: opacity 0.15s;
+    transition: opacity 0.15s, transform 0.15s;
   }
-  .confirm-yes-sm:hover { opacity: 0.85; }
 
-  .confirm-no-sm {
+  .confirm-yes:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .confirm-no {
     font-size: 0.7rem;
     font-weight: 500;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
-    background: none;
+    background: var(--surface);
     color: var(--muted);
     border: 1px solid var(--border);
-    border-radius: 2px;
-    padding: 4px 10px;
+    border-radius: 4px;
+    padding: 6px 14px;
     cursor: pointer;
-    transition: color 0.15s, border-color 0.15s;
+    transition: all 0.15s;
   }
-  .confirm-no-sm:hover { color: var(--ink); border-color: var(--ink); }
 
-  .post-row.deleting {
-    opacity: 0.4;
+  .confirm-no:hover { color: var(--ink); border-color: var(--ink); }
+
+  .post-card.deleting {
+    opacity: 0.5;
     pointer-events: none;
   }
 
@@ -312,41 +391,75 @@ const styles = `
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 80px 0;
-    gap: 12px;
+    justify-content: center;
+    padding: 80px 24px;
+    gap: 16px;
     color: var(--muted);
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
   }
 
+  .empty-state svg { opacity: 0.4; }
+
   .empty-state p {
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     font-weight: 300;
   }
+
+  .empty-state-link {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--surface);
+    background: var(--ink);
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    transition: background 0.15s;
+  }
+
+  .empty-state-link:hover { background: #2e2e2b; }
 
   /* ── Pagination ── */
   .pagination {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    margin-top: 48px;
+    gap: 8px;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
   }
 
   .page-btn {
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     font-weight: 500;
-    letter-spacing: 0.06em;
-    background: none;
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 7px 14px;
+    padding: 8px 14px;
     color: var(--muted);
     cursor: pointer;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    transition: all 0.15s;
+    min-width: 38px;
   }
-  .page-btn:hover:not(:disabled) { color: var(--ink); border-color: var(--ink); }
+
+  .page-btn:hover:not(:disabled) {
+    color: var(--ink);
+    border-color: var(--ink);
+    transform: translateY(-1px);
+  }
+
   .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-  .page-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  .page-btn.active {
+    background: var(--ink);
+    color: var(--surface);
+    border-color: var(--ink);
+  }
 
   .page-info {
     font-size: 0.75rem;
@@ -354,9 +467,13 @@ const styles = `
     padding: 0 8px;
   }
 
-  @media (max-width: 500px) {
-    .post-row { grid-template-columns: 1fr; }
-    .post-row-thumb, .post-row-thumb-placeholder { display: none; }
+  @media (max-width: 600px) {
+    .post-card { flex-direction: column; }
+    .post-card-image, .post-card-image-placeholder {
+      width: 100%;
+      height: 160px;
+    }
+    .post-card-read-time { margin-left: 0; }
   }
 `;
 
@@ -370,10 +487,13 @@ const readTime = (content) => {
 
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
-  return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 };
 
-// Strip HTML tags for excerpt display
 const stripHtml = (html) => {
   const tmp = document.createElement("div");
   tmp.innerHTML = html || "";
@@ -383,19 +503,19 @@ const stripHtml = (html) => {
 function SkeletonList() {
   return (
     <div className="skeleton-list">
-      {[1, 2, 3, 4].map(i => (
+      {[1, 2, 3, 4].map((i) => (
         <div key={i} className="skeleton-item" style={{ animationDelay: `${i * 0.08}s` }}>
           <div className="skeleton-line" style={{ width: "20%", height: "10px" }} />
-          <div className="skeleton-line" style={{ width: "70%", height: "20px" }} />
-          <div className="skeleton-line" style={{ width: "90%" }} />
-          <div className="skeleton-line" style={{ width: "60%" }} />
+          <div className="skeleton-line" style={{ width: "70%", height: "20px", marginTop: "10px" }} />
+          <div className="skeleton-line" style={{ width: "90%", marginTop: "10px" }} />
+          <div className="skeleton-line" style={{ width: "60%", marginTop: "10px" }} />
         </div>
       ))}
     </div>
   );
 }
 
-function PostRow({ post, onDelete, deletingId }) {
+function PostCard({ post, onDelete, deletingId }) {
   const [confirming, setConfirming] = useState(false);
   const currentUser = getLoggedInUser();
   const isOwner = currentUser && currentUser === post.author;
@@ -403,77 +523,96 @@ function PostRow({ post, onDelete, deletingId }) {
   const isDeleting = deletingId === postId;
 
   return (
-    <div className={`post-row${isDeleting ? " deleting" : ""}`}>
-      <div className="post-row-body">
-        <div className="post-row-top">
-          <span className="post-row-author">{post.author}</span>
+    <Link to={`/post/${postId}`} className={`post-card${isDeleting ? " deleting" : ""}`}>
+      <div className="post-card-body">
+        <div className="post-card-top">
+          <span className="post-card-author">{post.author}</span>
           {post.createdAt && (
             <>
-              <span className="post-row-dot" />
-              <span className="post-row-date">{formatDate(post.createdAt)}</span>
+              <span className="post-card-dot" />
+              <span className="post-card-date">{formatDate(post.createdAt)}</span>
             </>
           )}
         </div>
 
-        <Link to={`/post/${postId}`} style={{ textDecoration: "none" }}>
-          <h2 className="post-row-title">{post.title}</h2>
-        </Link>
+        <h2 className="post-card-title">{post.title}</h2>
+        <p className="post-card-excerpt">{stripHtml(post.content)}</p>
 
-        <p className="post-row-excerpt">{stripHtml(post.content)}</p>
-
-        <div className="post-row-footer">
-          {post.tags?.slice(0, 3).map(tag => (
-            <span key={tag} className="post-row-tag">{tag}</span>
+        <div className="post-card-footer">
+          {post.tags?.slice(0, 3).map((tag) => (
+            <span key={tag} className="post-card-tag">{tag}</span>
           ))}
-          <span className="post-row-read-time">{readTime(post.content)}</span>
+          <span className="post-card-read-time">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            {readTime(post.content)}
+          </span>
         </div>
 
-        {isOwner && !confirming && (
-          <div className="post-row-actions">
-            <Link
-              to={`/post/${postId}`}
-              style={{ fontSize: "0.7rem", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--muted)", textDecoration: "none" }}
-            >
-              Edit
-            </Link>
-            <button className="post-row-delete" onClick={() => setConfirming(true)}>
-              Delete
-            </button>
-          </div>
-        )}
-
-        {confirming && (
-          <div className="post-row-confirm">
-            <span>Delete this post?</span>
-            <button className="confirm-yes-sm" onClick={() => { setConfirming(false); onDelete(postId); }}>Delete</button>
-            <button className="confirm-no-sm" onClick={() => setConfirming(false)}>Cancel</button>
+        {isOwner && (
+          <div className="post-card-actions" onClick={(e) => e.preventDefault()}>
+            {!confirming ? (
+              <>
+                <Link to={`/post/${postId}`} className="post-card-action-btn">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                  Edit
+                </Link>
+                <button className="post-card-action-btn delete" onClick={() => setConfirming(true)}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  </svg>
+                  Delete
+                </button>
+              </>
+            ) : (
+              <div className="post-card-confirm" onClick={(e) => e.preventDefault()}>
+                <span>Delete this post?</span>
+                <button
+                  className="confirm-yes"
+                  onClick={() => {
+                    setConfirming(false);
+                    onDelete(postId);
+                  }}
+                >
+                  Yes
+                </button>
+                <button className="confirm-no" onClick={() => setConfirming(false)}>
+                  Cancel
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      {/* Thumbnail */}
       {post.coverImage ? (
-        <img src={post.coverImage} alt={post.title} className="post-row-thumb" />
+        <img src={post.coverImage} alt={post.title} className="post-card-image" />
       ) : (
-        <div className="post-row-thumb-placeholder">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <rect x="3" y="3" width="18" height="18" rx="2"/>
-            <circle cx="8.5" cy="8.5" r="1.5"/>
-            <polyline points="21 15 16 10 5 21"/>
+        <div className="post-card-image-placeholder">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
           </svg>
         </div>
       )}
-    </div>
+    </Link>
   );
 }
 
 function Home() {
-  const [posts,         setPosts]         = useState([]);
-  const [loading,       setLoading]       = useState(true);
-  const [error,         setError]         = useState(null);
-  const [deletingId,    setDeletingId]    = useState(null);
-  const [currentPage,   setCurrentPage]   = useState(0);
-  const [totalPages,    setTotalPages]    = useState(0);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
 
   const PAGE_SIZE = 8;
@@ -494,7 +633,9 @@ function Home() {
     }
   }, []);
 
-  useEffect(() => { loadPosts(0); }, [loadPosts]);
+  useEffect(() => {
+    loadPosts(0);
+  }, [loadPosts]);
 
   const goToPage = (page) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -507,12 +648,12 @@ function Home() {
     setError(null);
     try {
       await deletePostById(id);
-      setPosts(prev => prev.filter(p => getId(p) !== id));
-      setTotalElements(prev => prev - 1);
+      setPosts((prev) => prev.filter((p) => getId(p) !== id));
+      setTotalElements((prev) => prev - 1);
     } catch (err) {
       const status = err?.response?.status;
       if (status === 401 || status === 403) setError("Not authorised to delete this post.");
-      else if (status === 404) setPosts(prev => prev.filter(p => getId(p) !== id));
+      else if (status === 404) setPosts((prev) => prev.filter((p) => getId(p) !== id));
       else setError("Couldn't delete that post. Try again.");
     } finally {
       setDeletingId(null);
@@ -522,7 +663,7 @@ function Home() {
   const pageButtons = () => {
     const pages = [];
     const start = Math.max(0, currentPage - 2);
-    const end   = Math.min(totalPages - 1, currentPage + 2);
+    const end = Math.min(totalPages - 1, currentPage + 2);
     for (let i = start; i <= end; i++) pages.push(i);
     return pages;
   };
@@ -534,8 +675,13 @@ function Home() {
       <div className="home-wrapper">
         <header className="home-header">
           <h1 className="home-title">
-            Ideas worth<br /><em>reading.</em>
+            Ideas worth
+            <br />
+            <em>reading.</em>
           </h1>
+          <p className="home-subtitle">
+            Discover stories, thinking, and expertise from writers on any topic.
+          </p>
           <div className="home-meta">
             {!loading && (
               <span className="home-count">
@@ -548,7 +694,9 @@ function Home() {
         {error && (
           <div className="error-banner" role="alert">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
             </svg>
             {error}
             <button className="error-dismiss" onClick={() => setError(null)}>×</button>
@@ -559,34 +707,50 @@ function Home() {
           <SkeletonList />
         ) : posts.length === 0 ? (
           <div className="empty-state">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
-              <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
+              <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
             </svg>
             <p>No stories yet — be the first to write one.</p>
+            <a href="/create" className="empty-state-link">Write a story</a>
           </div>
         ) : (
           <>
             <div className="post-list">
-              {posts.map((post, i) => (
-                <PostRow
+              {posts.map((post) => (
+                <PostCard
                   key={getId(post)}
                   post={post}
                   onDelete={deletePost}
                   deletingId={deletingId}
-                  style={{ animationDelay: `${i * 0.05}s` }}
                 />
               ))}
             </div>
 
             {totalPages > 1 && (
               <nav className="pagination" aria-label="Post pages">
-                <button className="page-btn" onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 0}>←</button>
-                {pageButtons().map(p => (
-                  <button key={p} className={`page-btn${p === currentPage ? " active" : ""}`} onClick={() => goToPage(p)}>
+                <button
+                  className="page-btn"
+                  onClick={() => goToPage(currentPage - 1)}
+                  disabled={currentPage === 0}
+                >
+                  ←
+                </button>
+                {pageButtons().map((p) => (
+                  <button
+                    key={p}
+                    className={`page-btn${p === currentPage ? " active" : ""}`}
+                    onClick={() => goToPage(p)}
+                  >
                     {p + 1}
                   </button>
                 ))}
-                <button className="page-btn" onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages - 1}>→</button>
+                <button
+                  className="page-btn"
+                  onClick={() => goToPage(currentPage + 1)}
+                  disabled={currentPage === totalPages - 1}
+                >
+                  →
+                </button>
                 <span className="page-info">{currentPage + 1} / {totalPages}</span>
               </nav>
             )}
