@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PostDetails from "./pages/PostDetails";
 import CreatePost from "./pages/CreatePost";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/post/:id" element={<PostDetails />} />
           <Route path="/create" element={<CreatePost />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
     </Router>

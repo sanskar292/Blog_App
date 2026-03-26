@@ -31,6 +31,7 @@ public class PostController {
         return ResponseEntity.ok(postService.getAllPosts(PageRequest.of(page, size, Sort.by("createdAt").descending())));
     }
 
+
     @GetMapping("/{id}")
     public Post getPost(@PathVariable Long id) {
         return postService.getPostById(id);

@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchPostById, fetchComments, createComment, updatePostById, getLoggedInUser } from "../api";
+import DOMPurify from "dompurify";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
@@ -30,6 +31,23 @@ const styles = `
     max-width: 680px;
     margin: 0 auto;
     padding: 56px 24px 120px;
+  }
+
+  /* ── Reading Progress Bar ── */
+  .progress-container {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    height: 4px;
+    background: transparent;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #e0a890);
+    width: 0%;
+    transition: width 0.1s ease-out;
   }
 
   /* ── Back ── */
@@ -121,7 +139,67 @@ const styles = `
     font-weight: 300;
     line-height: 1.85;
     color: #3a3a37;
-    white-space: pre-wrap;
+  }
+
+  .pd-content h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    margin: 1.5em 0 0.5em;
+    color: var(--ink);
+  }
+
+  .pd-content h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    margin: 1.5em 0 0.5em;
+    color: var(--ink);
+  }
+
+  .pd-content p {
+    margin: 1em 0;
+  }
+
+  .pd-content strong {
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .pd-content em {
+    font-style: italic;
+  }
+
+  .pd-content ul,
+  .pd-content ol {
+    margin: 1em 0;
+    padding-left: 2em;
+  }
+
+  .pd-content li {
+    margin: 0.5em 0;
+    line-height: 1.8;
+  }
+
+  .pd-content a {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+
+  .pd-content blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1em;
+    margin: 1em 0;
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  .pd-content code {
+    background: var(--code-bg, #f4f3ec);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: var(--mono, ui-monospace, Consolas, monospace);
+    font-size: 0.9em;
   }
 
   /* Edit button */
@@ -439,6 +517,7 @@ function PostDetails() {
   const [loadError,   setLoadError]   = useState(null);
   const [submitError, setSubmitError] = useState(null);
   const [fieldError,  setFieldError]  = useState(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const [editing,     setEditing]     = useState(false);
   const [editForm,    setEditForm]    = useState({ title: "", content: "", coverImage: "" });
@@ -465,6 +544,19 @@ function PostDetails() {
   }, [id]);
 
   useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const currentUser = getLoggedInUser();
   const isOwner     = currentUser && post && currentUser === post.author;
@@ -535,6 +627,10 @@ function PostDetails() {
       <style>{styles}</style>
 
       <div className="pd-wrapper">
+        <div className="progress-container">
+          <div className="progress-bar" style={{ width: `${scrollProgress}%` }} />
+        </div>
+
         <a href="/" className="pd-back">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -638,7 +734,10 @@ function PostDetails() {
 
               <h1 className="pd-title">{post?.title}</h1>
               <hr className="pd-divider" />
-              <p className="pd-content">{post?.content}</p>
+              <div
+                className="pd-content"
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post?.content || "") }}
+              />
             </>
           )}
         </section>

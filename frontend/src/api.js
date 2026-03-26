@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://blogapp-backend-amwi.onrender.com/api",
+  baseURL: "https://blogapp-backend-amwi.onrender.com/api", 
+  baseURL: "http://localhost:8080/api",
 });
 
 // Attach JWT token
@@ -38,6 +39,10 @@ export const deletePostById  = (id)                  => API.delete(`/posts/${id}
 // COMMENTS
 export const fetchComments = (postId)          => API.get(`/comments/${postId}`);
 export const createComment = (postId, content) => API.post(`/comments/${postId}`, { content });
+
+// USERS
+export const fetchUserProfile = () => API.get("/users/profile");
+export const fetchUserPosts = (username, page = 0, size = 5) => API.get(`/users/${username}/posts?page=${page}&size=${size}`);
 
 // Decode JWT to get logged-in username
 export const getLoggedInUser = () => {

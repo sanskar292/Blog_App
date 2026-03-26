@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { getLoggedInUser } from "../api";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
@@ -201,7 +202,12 @@ function AppNavbar() {
   const navigate  = useNavigate();
   const location  = useLocation();
   const [open, setOpen] = useState(false);
+  const [username, setUsername] = useState(null);
   const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    setUsername(getLoggedInUser());
+  }, [token]);
 
   useEffect(() => { setOpen(false); }, [location.pathname]);
 
@@ -232,6 +238,18 @@ function AppNavbar() {
               </>
             ) : (
               <>
+                {/* Profile link */}
+                <Link to="/profile" className={`nav-link${isActive("/profile") ? " active" : ""}`} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                  {username || "Profile"}
+                </Link>
+
+                <div className="nav-sep" aria-hidden="true" />
+
                 {/* Write button — only when logged in */}
                 <Link to="/create" className={`nav-write${isActive("/create") ? " active" : ""}`}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
@@ -294,6 +312,13 @@ function AppNavbar() {
               </>
             ) : (
               <>
+                <Link to="/profile" className="nav-drawer-link">
+                  Profile
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </Link>
                 <Link to="/create" className="nav-drawer-link">
                   Write a story
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

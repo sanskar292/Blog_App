@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
-import { Link } from "react-router-dom";
-import { fetchPosts, deletePostById, getLoggedInUser } from "../api";
+import { Link, useNavigate } from "react-router-dom";
+import API, { deletePostById, getLoggedInUser } from "../api";
 import DOMPurify from "dompurify";
 
 const styles = `
@@ -18,108 +18,114 @@ const styles = `
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    min-height: 100vh;
-  }
-
-  .home-wrapper {
+  .profile-wrapper {
     max-width: 720px;
     margin: 0 auto;
     padding: 64px 24px 120px;
-  }
-
-  /* ── Header ── */
-  .home-header {
-    margin-bottom: 56px;
-  }
-
-  .home-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(2.4rem, 6vw, 3.6rem);
-    font-weight: 400;
-    letter-spacing: -0.03em;
-    line-height: 1.05;
     color: var(--ink);
-    margin-bottom: 12px;
+    background: var(--paper);
+    min-height: 100vh;
   }
 
-  .home-title em { font-style: italic; color: var(--accent); }
+  /* ── Profile Header ── */
+  .profile-header {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
 
-  .home-meta {
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #e0a890);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid var(--border);
-    padding-top: 14px;
-    margin-top: 16px;
+    justify-content: center;
+    font-family: 'Instrument Serif', serif;
+    font-size: 2rem;
+    color: var(--paper);
+    font-weight: 400;
+    flex-shrink: 0;
   }
 
-  .home-count {
-    font-size: 0.75rem;
+  .profile-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .profile-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .profile-name {
+    font-family: 'Instrument Serif', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: #1a1a18;
+    line-height: 1;
+  }
+
+  .profile-stats {
+    display: flex;
+    gap: 24px;
+  }
+
+  .profile-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .profile-stat-value {
+    font-size: 1.25rem;
     font-weight: 500;
-    letter-spacing: 0.1em;
+    color: #1a1a18;
+    line-height: 1;
+  }
+
+  .profile-stat-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
   }
 
-  /* ── Error ── */
-  .error-banner {
+  /* ── Profile Nav ── */
+  .profile-nav {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #fef2ef;
-    border: 1px solid #f5c6ba;
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    margin-bottom: 32px;
-    font-size: 0.85rem;
-    color: var(--accent);
+    gap: 8px;
+    margin-bottom: 24px;
   }
 
-  .error-dismiss {
-    margin-left: auto;
-    cursor: pointer;
+  .profile-tab {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     background: none;
     border: none;
-    color: var(--accent);
-    font-size: 1rem;
-    opacity: 0.7;
-    transition: opacity 0.15s;
+    color: var(--muted);
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: color 0.15s, background 0.15s;
   }
-  .error-dismiss:hover { opacity: 1; }
+  .profile-tab:hover { color: var(--ink); background: var(--border); }
+  .profile-tab.active { color: var(--ink); background: var(--border); }
 
-  /* ── Skeleton ── */
-  .skeleton-list { display: flex; flex-direction: column; }
+  /* ── Posts List ── */
+  .profile-posts-list { display: flex; flex-direction: column; }
 
-  .skeleton-item {
-    padding: 28px 0;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .skeleton-line {
-    height: 14px;
-    background: linear-gradient(90deg, var(--border) 25%, #ede9e0 50%, var(--border) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.4s infinite;
-    border-radius: 2px;
-  }
-
-  @keyframes shimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
-
-  /* ── Post list ── */
-  .post-list { display: flex; flex-direction: column; }
-
-  /* ── Medium-style post row ── */
   .post-row {
     display: grid;
     grid-template-columns: 1fr auto;
@@ -218,7 +224,6 @@ const styles = `
     color: var(--muted);
   }
 
-  /* Cover image thumbnail */
   .post-row-thumb {
     width: 100px;
     height: 72px;
@@ -241,14 +246,13 @@ const styles = `
     opacity: 0.5;
   }
 
-  /* Owner actions */
   .post-row-actions {
     display: flex;
     gap: 8px;
     margin-top: 8px;
   }
 
-  .post-row-delete {
+  .post-row-edit, .post-row-delete {
     background: none;
     border: none;
     cursor: pointer;
@@ -259,10 +263,10 @@ const styles = `
     color: var(--muted);
     padding: 0;
     transition: color 0.15s;
+    text-decoration: none;
   }
-  .post-row-delete:hover { color: var(--accent); }
+  .post-row-edit:hover, .post-row-delete:hover { color: var(--accent); }
 
-  /* Confirm inline */
   .post-row-confirm {
     display: flex;
     align-items: center;
@@ -307,7 +311,7 @@ const styles = `
     pointer-events: none;
   }
 
-  /* ── Empty ── */
+  /* ── Empty State ── */
   .empty-state {
     display: flex;
     flex-direction: column;
@@ -321,6 +325,18 @@ const styles = `
     font-size: 0.875rem;
     font-weight: 300;
   }
+
+  .empty-state-link {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    margin-top: 8px;
+    transition: opacity 0.15s;
+  }
+  .empty-state-link:hover { opacity: 0.8; }
 
   /* ── Pagination ── */
   .pagination {
@@ -354,9 +370,67 @@ const styles = `
     padding: 0 8px;
   }
 
+  /* ── Loading ── */
+  .profile-loading {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .profile-loading-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skeleton-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, var(--border) 25%, #ede9e0 50%, var(--border) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+  }
+
+  .skeleton-name {
+    height: 32px;
+    width: 200px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--border) 25%, #ede9e0 50%, var(--border) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
   @media (max-width: 500px) {
     .post-row { grid-template-columns: 1fr; }
     .post-row-thumb, .post-row-thumb-placeholder { display: none; }
+    .profile-info { flex-direction: column; align-items: flex-start; }
+  }
+
+  /* ── Skeleton Loading ── */
+  .skeleton-list { display: flex; flex-direction: column; }
+
+  .skeleton-item {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .skeleton-line {
+    height: 14px;
+    background: linear-gradient(90deg, var(--border) 25%, #ede9e0 50%, var(--border) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    border-radius: 2px;
   }
 `;
 
@@ -373,32 +447,14 @@ const formatDate = (dateStr) => {
   return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 };
 
-// Strip HTML tags for excerpt display
 const stripHtml = (html) => {
   const tmp = document.createElement("div");
   tmp.innerHTML = html || "";
   return tmp.textContent || tmp.innerText || "";
 };
 
-function SkeletonList() {
-  return (
-    <div className="skeleton-list">
-      {[1, 2, 3, 4].map(i => (
-        <div key={i} className="skeleton-item" style={{ animationDelay: `${i * 0.08}s` }}>
-          <div className="skeleton-line" style={{ width: "20%", height: "10px" }} />
-          <div className="skeleton-line" style={{ width: "70%", height: "20px" }} />
-          <div className="skeleton-line" style={{ width: "90%" }} />
-          <div className="skeleton-line" style={{ width: "60%" }} />
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function PostRow({ post, onDelete, deletingId }) {
   const [confirming, setConfirming] = useState(false);
-  const currentUser = getLoggedInUser();
-  const isOwner = currentUser && currentUser === post.author;
   const postId = getId(post);
   const isDeleting = deletingId === postId;
 
@@ -428,17 +484,10 @@ function PostRow({ post, onDelete, deletingId }) {
           <span className="post-row-read-time">{readTime(post.content)}</span>
         </div>
 
-        {isOwner && !confirming && (
+        {!confirming && (
           <div className="post-row-actions">
-            <Link
-              to={`/post/${postId}`}
-              style={{ fontSize: "0.7rem", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--muted)", textDecoration: "none" }}
-            >
-              Edit
-            </Link>
-            <button className="post-row-delete" onClick={() => setConfirming(true)}>
-              Delete
-            </button>
+            <Link to={`/post/${postId}`} className="post-row-edit">Edit</Link>
+            <button className="post-row-delete" onClick={() => setConfirming(true)}>Delete</button>
           </div>
         )}
 
@@ -451,7 +500,6 @@ function PostRow({ post, onDelete, deletingId }) {
         )}
       </div>
 
-      {/* Thumbnail */}
       {post.coverImage ? (
         <img src={post.coverImage} alt={post.title} className="post-row-thumb" />
       ) : (
@@ -467,34 +515,82 @@ function PostRow({ post, onDelete, deletingId }) {
   );
 }
 
-function Home() {
-  const [posts,         setPosts]         = useState([]);
-  const [loading,       setLoading]       = useState(true);
-  const [error,         setError]         = useState(null);
-  const [deletingId,    setDeletingId]    = useState(null);
-  const [currentPage,   setCurrentPage]   = useState(0);
-  const [totalPages,    setTotalPages]    = useState(0);
-  const [totalElements, setTotalElements] = useState(0);
+function ProfileLoading() {
+  return (
+    <div className="profile-loading">
+      <div className="profile-loading-header">
+        <div className="skeleton-avatar" />
+        <div className="skeleton-name" />
+      </div>
+      {[1, 2, 3].map(i => (
+        <div key={i} className="skeleton-item" style={{ animationDelay: `${i * 0.08}s` }}>
+          <div className="skeleton-line" style={{ width: "20%", height: "10px" }} />
+          <div className="skeleton-line" style={{ width: "70%", height: "20px" }} />
+          <div className="skeleton-line" style={{ width: "90%" }} />
+          <div className="skeleton-line" style={{ width: "60%" }} />
+        </div>
+      ))}
+    </div>
+  );
+}
 
-  const PAGE_SIZE = 8;
+function Profile() {
+  const [profile, setProfile] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const currentUser = getLoggedInUser();
 
-  const loadPosts = useCallback(async (page = 0) => {
-    setLoading(true);
+  const PAGE_SIZE = 5;
+
+  const loadProfile = useCallback(async () => {
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
     try {
       setError(null);
-      const { data } = await fetchPosts(page, PAGE_SIZE);
-      setPosts(data.content);
-      setTotalPages(data.totalPages);
-      setTotalElements(data.totalElements);
-      setCurrentPage(data.number);
-    } catch {
-      setError("Failed to load posts. Please try again.");
-    } finally {
-      setLoading(false);
+      const response = await API.get("/users/profile");
+      console.log('Profile response:', response);
+      console.log('Profile data:', response.data);
+      setProfile(response.data);
+    } catch (err) {
+      console.error("Failed to load profile:", err);
+      console.error('Error response:', err.response);
+      setError(err.response?.data || "Failed to load profile");
     }
-  }, []);
+  }, [currentUser, navigate]);
 
-  useEffect(() => { loadPosts(0); }, [loadPosts]);
+  const loadPosts = useCallback(async (page = 0) => {
+    if (!currentUser) return;
+    try {
+      setError(null);
+      const response = await API.get(`/users/${currentUser}/posts?page=${page}&size=${PAGE_SIZE}`);
+      console.log('Posts response:', response);
+      console.log('Posts data:', response.data);
+      setPosts(response.data.content || []);
+      setTotalPages(response.data.totalPages || 0);
+      setCurrentPage(response.data.number || 0);
+    } catch (err) {
+      console.error("Failed to load posts:", err);
+      console.error('Error response:', err.response);
+      setError(err.response?.data || "Failed to load posts");
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    const init = async () => {
+      setLoading(true);
+      await loadProfile();
+      await loadPosts(0);
+      setLoading(false);
+    };
+    init();
+  }, [loadProfile, loadPosts]);
 
   const goToPage = (page) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -504,69 +600,99 @@ function Home() {
   const deletePost = useCallback(async (id) => {
     if (deletingId) return;
     setDeletingId(id);
-    setError(null);
     try {
       await deletePostById(id);
       setPosts(prev => prev.filter(p => getId(p) !== id));
-      setTotalElements(prev => prev - 1);
+      if (profile) {
+        setProfile(prev => ({ ...prev, postsCount: (prev.postsCount || 1) - 1 }));
+      }
     } catch (err) {
-      const status = err?.response?.status;
-      if (status === 401 || status === 403) setError("Not authorised to delete this post.");
-      else if (status === 404) setPosts(prev => prev.filter(p => getId(p) !== id));
-      else setError("Couldn't delete that post. Try again.");
+      console.error("Failed to delete post:", err);
     } finally {
       setDeletingId(null);
     }
-  }, [deletingId]);
+  }, [deletingId, profile]);
 
   const pageButtons = () => {
     const pages = [];
     const start = Math.max(0, currentPage - 2);
-    const end   = Math.min(totalPages - 1, currentPage + 2);
+    const end = Math.min(totalPages - 1, currentPage + 2);
     for (let i = start; i <= end; i++) pages.push(i);
     return pages;
   };
+
+  if (loading) {
+    return (
+      <>
+        <style>{styles}</style>
+        <div className="profile-wrapper">
+          <ProfileLoading />
+        </div>
+      </>
+    );
+  }
+
+  if (!currentUser) {
+    return null;
+  }
 
   return (
     <>
       <style>{styles}</style>
 
-      <div className="home-wrapper">
-        <header className="home-header">
-          <h1 className="home-title">
-            Ideas worth<br /><em>reading.</em>
-          </h1>
-          <div className="home-meta">
-            {!loading && (
-              <span className="home-count">
-                {totalElements} {totalElements === 1 ? "story" : "stories"}
-              </span>
-            )}
-          </div>
-        </header>
-
+      <div className="profile-wrapper">
         {error && (
-          <div className="error-banner" role="alert">
+          <div className="error-banner" role="alert" style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            background: '#fef2ef',
+            border: '1px solid #f5c6ba',
+            borderRadius: '4px',
+            padding: '12px 16px',
+            marginBottom: '32px',
+            fontSize: '0.85rem',
+            color: '#c8502a'
+          }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
             </svg>
             {error}
-            <button className="error-dismiss" onClick={() => setError(null)}>×</button>
+            <button onClick={() => { setLoading(true); loadProfile(); loadPosts(); setLoading(false); }} 
+              style={{ marginLeft: 'auto', cursor: 'pointer', background: 'none', border: 'none', color: '#c8502a', fontSize: '1rem', opacity: 0.7 }}>
+              Retry
+            </button>
           </div>
         )}
 
-        {loading ? (
-          <SkeletonList />
-        ) : posts.length === 0 ? (
+        <header className="profile-header">
+          <div className="profile-info">
+            <div className="profile-avatar">
+              {profile?.username?.charAt(0).toUpperCase()}
+            </div>
+            <div className="profile-details">
+              <h1 className="profile-name">{profile?.username || "User"}</h1>
+              <div className="profile-stats">
+                <div className="profile-stat">
+                  <span className="profile-stat-value">{profile?.postsCount || 0}</span>
+                  <span className="profile-stat-label">Stories</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {posts.length === 0 ? (
           <div className="empty-state">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
               <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
             </svg>
-            <p>No stories yet — be the first to write one.</p>
+            <p>You haven't written any stories yet.</p>
+            <Link to="/create" className="empty-state-link">Write your first story</Link>
           </div>
         ) : (
           <>
-            <div className="post-list">
+            <div className="profile-posts-list">
               {posts.map((post, i) => (
                 <PostRow
                   key={getId(post)}
@@ -597,4 +723,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Profile;

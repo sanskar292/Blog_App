@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createNewPost } from "../api";
+import QuillEditor from "../components/QuilEditor";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
@@ -97,8 +98,7 @@ const styles = `
 
   .create-field:focus-within .create-field-label { color: var(--ink); }
 
-  .create-input,
-  .create-textarea {
+  .create-input {
     font-family: 'DM Sans', sans-serif;
     font-weight: 300;
     color: var(--ink);
@@ -130,21 +130,69 @@ const styles = `
   }
 
   .create-input:focus,
-  .create-textarea:focus,
   .create-title-input:focus {
     border-color: var(--ink);
   }
 
   .create-input::placeholder,
-  .create-textarea::placeholder,
   .create-title-input::placeholder {
     color: #c2bdb4;
   }
 
-  .create-textarea {
+  /* Quill Editor Overrides */
+  .create-editor-wrapper {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .create-editor-wrapper:focus-within {
+    border-color: var(--border-focus);
+  }
+
+  .create-editor-wrapper .ql-toolbar {
+    background: var(--paper);
+    border: none !important;
+    border-bottom: 1px solid var(--border) !important;
+    padding: 10px 12px;
+  }
+
+  .create-editor-wrapper .ql-toolbar button {
+    color: var(--muted);
+  }
+
+  .create-editor-wrapper .ql-toolbar button:hover,
+  .create-editor-wrapper .ql-toolbar button.ql-active {
+    color: var(--ink);
+  }
+
+  .create-editor-wrapper .ql-toolbar .ql-stroke {
+    stroke: currentColor;
+  }
+
+  .create-editor-wrapper .ql-toolbar .ql-fill {
+    fill: currentColor;
+  }
+
+  .create-editor-wrapper .ql-container {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--ink);
+    background: var(--paper);
+    border: none !important;
     min-height: 320px;
-    resize: none;
+  }
+
+  .create-editor-wrapper .ql-editor {
+    padding: 16px 14px;
     line-height: 1.8;
+  }
+
+  .create-editor-wrapper .ql-editor.ql-blank::before {
+    color: #c2bdb4;
+    font-style: normal;
   }
 
   /* Word count */
@@ -400,12 +448,13 @@ function CreatePost() {
           {/* Content */}
           <div className="create-field">
             <label className="create-field-label">Content</label>
-            <textarea
-              className="create-textarea"
-              placeholder="Write your story…"
-              value={content}
-              onChange={e => setContent(e.target.value)}
-            />
+            <div className="create-editor-wrapper">
+              <QuillEditor
+                value={content}
+                onChange={setContent}
+                placeholder="Write your story…"
+              />
+            </div>
           </div>
 
           <div className="create-word-count">
