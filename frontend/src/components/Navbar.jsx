@@ -10,6 +10,7 @@ const styles = `
     --paper: #f5f2eb;
     --muted: #9b9689;
     --accent: #c8502a;
+    --poetry-accent: #7c5cb8;
     --surface: #fffdf8;
     --border: #e2ded4;
     --radius: 6px;
@@ -52,6 +53,23 @@ const styles = `
     align-items: center;
     gap: 8px;
   }
+
+  .nav-poetry-link {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: var(--radius);
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-poetry-link:hover { color: var(--poetry-accent); background: rgba(124, 92, 184, 0.1); }
+  .nav-poetry-link.active { color: var(--poetry-accent); }
 
   .nav-link {
     font-size: 0.75rem;
@@ -213,6 +231,14 @@ function AppNavbar() {
           </Link>
 
           <div className="nav-actions">
+            <Link to="/poetry" className={`nav-poetry-link${isActive("/poetry") ? " active" : ""}`}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+              </svg>
+              Poetry
+            </Link>
             {!token ? (
               <>
                 <Link to="/login" className={`nav-link${isActive("/login") ? " active" : ""}`}>
@@ -281,6 +307,12 @@ function AppNavbar() {
           <div className="nav-drawer-inner">
             {!token ? (
               <>
+                <Link to="/poetry" className="nav-drawer-link">
+                  Poetry
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </Link>
                 <Link to="/login" className="nav-drawer-link">
                   Login
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -296,6 +328,12 @@ function AppNavbar() {
               </>
             ) : (
               <>
+                <Link to="/poetry" className="nav-drawer-link">
+                  Poetry
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </Link>
                 <Link to="/profile" className="nav-drawer-link">
                   Profile
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

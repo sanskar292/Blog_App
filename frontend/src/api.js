@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "https://blogapp-backend-amwi.onrender.com/api",
+ baseURL: "http://localhost:8080/api",
 });
 
 // Attach JWT token
@@ -42,6 +42,20 @@ export const createComment = (postId, content) => API.post(`/comments/${postId}`
 // USERS
 export const fetchUserProfile = () => API.get("/users/profile");
 export const fetchUserPosts = (username, page = 0, size = 5) => API.get(`/users/${username}/posts?page=${page}&size=${size}`);
+
+// POETRY
+export const fetchPoems = (page = 0, size = 6) => API.get(`/poetry?page=${page}&size=${size}`);
+export const fetchPoemById = (id) => API.get(`/poetry/${id}`);
+export const createNewPoem = (data) => API.post("/poetry", data);
+export const updatePoemById = (id, data) => API.put(`/poetry/${id}`, data);
+export const deletePoemById = (id) => API.delete(`/poetry/${id}`);
+export const fetchPoemsByAuthor = (author, page = 0, size = 6) => API.get(`/poetry/author/${author}?page=${page}&size=${size}`);
+
+// POETRY COMMENTS
+export const fetchPoetryComments = (poetryId) => API.get(`/poetry-comments/${poetryId}`);
+export const createPoetryComment = (poetryId, content) => API.post(`/poetry-comments/${poetryId}`, content, {
+  headers: { "Content-Type": "application/json" }
+});
 
 // Decode JWT to get logged-in username
 export const getLoggedInUser = () => {

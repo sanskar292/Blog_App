@@ -1,0 +1,319 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap');
+
+  :root {
+    --poetry-ink: #2d2d3a;
+    --poetry-paper: #f8f6f0;
+    --poetry-muted: #8b8699;
+    --poetry-accent: #7c5cb8;
+    --poetry-surface: #fffef9;
+    --poetry-border: #e6e2d8;
+    --poetry-gold: #b8985c;
+    --poetry-radius: 2px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--poetry-paper);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 200;
+    min-height: 100vh;
+  }
+
+  .create-poetry-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── Header ── */
+  .create-poetry-header {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--poetry-border);
+    text-align: center;
+    position: relative;
+  }
+
+  .create-poetry-header::before {
+    content: '';
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48px;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, var(--poetry-gold), transparent);
+  }
+
+  .create-poetry-label {
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--poetry-accent);
+    background: rgba(124, 92, 184, 0.1);
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .create-poetry-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: -0.02em;
+    color: var(--poetry-ink);
+    line-height: 1.2;
+  }
+
+  .create-poetry-title span {
+    color: var(--poetry-accent);
+  }
+
+  /* ── Form ── */
+  .create-poetry-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .create-poetry-field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 26px;
+  }
+
+  .create-poetry-field-label {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--poetry-muted);
+    transition: color 0.2s ease;
+  }
+
+  .create-poetry-field:focus-within .create-poetry-field-label {
+    color: var(--poetry-accent);
+  }
+
+  .create-poetry-input {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 200;
+    color: var(--poetry-ink);
+    background: var(--poetry-surface);
+    border: 1px solid var(--poetry-border);
+    border-radius: var(--poetry-radius);
+    padding: 13px 15px;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font-size: 0.92rem;
+  }
+
+  .create-poetry-title-input {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: -0.01em;
+    color: var(--poetry-ink);
+    background: var(--poetry-surface);
+    border: 1px solid var(--poetry-border);
+    border-radius: var(--poetry-radius);
+    padding: 16px 18px;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .create-poetry-mood-input {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 300;
+  }
+
+  .create-poetry-input:focus,
+  .create-poetry-title-input:focus {
+    border-color: var(--poetry-accent);
+    box-shadow: 0 0 0 3px rgba(124, 92, 184, 0.1);
+  }
+
+  .create-poetry-input::placeholder,
+  .create-poetry-title-input::placeholder {
+    color: #c9c4b8;
+  }
+
+  /* Line count */
+  .create-poetry-line-count {
+    font-size: 0.68rem;
+    color: var(--poetry-muted);
+    text-align: right;
+    margin-top: -16px;
+    margin-bottom: 24px;
+    letter-spacing: 0.03em;
+  }
+
+  /* Tags input */
+  .poetry-tags-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    background: var(--poetry-surface);
+    border: 1px solid var(--poetry-border);
+    border-radius: var(--poetry-radius);
+    padding: 10px 12px;
+    min-height: 42px;
+    transition: border-color 0.2s ease;
+  }
+
+  .poetry-tags-wrapper:focus-within {
+    border-color: var(--poetry-accent);
+  }
+
+  .poetry-tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--poetry-muted);
+    background: rgba(139, 134, 153, 0.1);
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  .poetry-tag-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--poetry-muted);
+    font-size: 0.9rem;
+    line-height: 1;
+    padding: 0;
+    transition: color 0.15s ease;
+  }
+  .poetry-tag-remove:hover { color: var(--poetry-accent); }
+
+  .poetry-tag-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 200;
+    color: var(--poetry-ink);
+    flex: 1;
+    min-width: 100px;
+    padding: 4px 0;
+  }
+  .poetry-tag-input::placeholder { color: #c9c4b8; }
+
+  .poetry-tags-hint {
+    font-size: 0.62rem;
+    color: var(--poetry-muted);
+    margin-top: 6px;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── Error ── */
+  .create-poetry-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(196, 69, 105, 0.08);
+    border: 1px solid rgba(196, 69, 105, 0.2);
+    border-radius: var(--poetry-radius);
+    padding: 11px 14px;
+    font-size: 0.78rem;
+    color: #c44569;
+    margin-bottom: 26px;
+  }
+
+  /* ── Footer ── */
+  .create-poetry-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 32px;
+    border-top: 1px solid var(--poetry-border);
+    margin-top: 8px;
+  }
+
+  .create-poetry-hint {
+    font-size: 0.68rem;
+    color: var(--poetry-muted);
+    letter-spacing: 0.03em;
+  }
+
+  .create-poetry-submit {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, var(--poetry-accent), #5c4a8a);
+    color: var(--poetry-surface);
+    border: none;
+    border-radius: var(--poetry-radius);
+    padding: 11px 28px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 6px rgba(124, 92, 184, 0.2);
+  }
+  .create-poetry-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(124, 92, 184, 0.3);
+  }
+  .create-poetry-submit:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .create-poetry-spinner {
+    width: 13px;
+    height: 13px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--poetry-surface);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Decorative */
+  .create-poetry-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 40px;
+    color: var(--poetry-gold);
+    opacity: 0.5;
+  }
+
+  .create-poetry-ornament::before,
+  .create-poetry-ornament::after {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, currentColor, transparent);
+  }
+
+  @media (max-width: 600px) {
+    .create-poetry-wrapper {
+      padding: 40px 20px 60px;
+    }
+    .create-poetry-header {
+      margin-bottom: 36px;
+    }
+  }

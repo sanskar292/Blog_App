@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchPostById, fetchComments, createComment, updatePostById, getLoggedInUser } from "../api";
 import DOMPurify from "dompurify";
-import QuillEditor from "../components/QuilEditor";
+import TiptapEditor from "../components/TiptapEditor";
 import CommentSection from "../components/CommentSection";
 
 const styles = `
@@ -315,61 +315,44 @@ const styles = `
   }
   .pd-edit-cancel:hover { color: var(--ink); border-color: var(--ink); }
 
-  /* Quill Editor in Edit Form */
-  .pd-edit-editor-wrapper {
+  /* Tiptap Editor in Edit Form */
+  .pd-edit-form .tiptap-editor-wrapper {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
     transition: border-color 0.2s;
   }
 
-  .pd-edit-editor-wrapper:focus-within {
+  .pd-edit-form .tiptap-editor-wrapper:focus-within {
     border-color: var(--border-focus);
   }
 
-  .pd-edit-editor-wrapper .ql-toolbar {
+  .pd-edit-form .tiptap-toolbar {
     background: var(--paper);
-    border: none !important;
-    border-bottom: 1px solid var(--border) !important;
+    border-bottom: 1px solid var(--border);
     padding: 10px 12px;
   }
 
-  .pd-edit-editor-wrapper .ql-toolbar button {
+  .pd-edit-form .tiptap-toolbar button {
     color: var(--muted);
   }
 
-  .pd-edit-editor-wrapper .ql-toolbar button:hover,
-  .pd-edit-editor-wrapper .ql-toolbar button.ql-active {
+  .pd-edit-form .tiptap-toolbar button:hover:not(:disabled),
+  .pd-edit-form .tiptap-toolbar button.is-active {
     color: var(--ink);
   }
 
-  .pd-edit-editor-wrapper .ql-toolbar .ql-stroke {
-    stroke: currentColor;
-  }
-
-  .pd-edit-editor-wrapper .ql-toolbar .ql-fill {
-    fill: currentColor;
-  }
-
-  .pd-edit-editor-wrapper .ql-container {
+  .pd-edit-form .tiptap-editor-content {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.95rem;
     font-weight: 300;
     color: var(--ink);
-    background: var(--paper);
-    border: none !important;
+    background: var(--surface);
     min-height: 320px;
-  }
-
-  .pd-edit-editor-wrapper .ql-editor {
     padding: 16px 14px;
     line-height: 1.8;
   }
 
-  .pd-edit-editor-wrapper .ql-editor.ql-blank::before {
-    color: #c2bdb4;
-    font-style: normal;
-  }
 
   .pd-save-success {
     display: inline-flex;
@@ -573,13 +556,11 @@ function PostDetails() {
                 placeholder="Post title"
               />
               <span className="pd-edit-label">Content</span>
-              <div className="pd-edit-editor-wrapper">
-                <QuillEditor
-                  value={editForm.content}
-                  onChange={(content) => setEditForm(f => ({ ...f, content }))}
-                  placeholder="Edit your story…"
-                />
-              </div>
+              <TiptapEditor
+                value={editForm.content}
+                onChange={(content) => setEditForm(f => ({ ...f, content }))}
+                placeholder="Edit your story…"
+              />
               {saveError && (
                 <div className="pd-error" role="alert" style={{ marginBottom: 0 }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">

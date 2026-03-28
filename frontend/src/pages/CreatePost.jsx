@@ -1,353 +1,21 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createNewPost } from "../api";
-import QuillEditor from "../components/QuilEditor";
-
-const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
-
-  :root {
-    --ink: #1a1a18;
-    --paper: #f5f2eb;
-    --muted: #9b9689;
-    --accent: #c8502a;
-    --surface: #fffdf8;
-    --border: #e2ded4;
-    --border-focus: #a8a49a;
-    --radius: 8px;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--paper);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    min-height: 100vh;
-  }
-
-  .create-wrapper {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 40px 24px 80px;
-  }
-
-  /* ── Header ── */
-  .create-header {
-    margin-bottom: 40px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .create-label {
-    display: inline-block;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent);
-    background: rgba(200, 80, 42, 0.1);
-    padding: 4px 10px;
-    border-radius: 20px;
-    margin-bottom: 14px;
-  }
-
-  .create-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(1.8rem, 4vw, 2.4rem);
-    font-weight: 400;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-    line-height: 1.2;
-  }
-
-  .create-title em { font-style: italic; }
-
-  /* ── Cover preview ── */
-  .cover-preview {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    border-radius: var(--radius);
-    margin-bottom: 28px;
-    border: 1px solid var(--border);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  }
-
-  .cover-placeholder {
-    width: 100%;
-    height: 160px;
-    border: 2px dashed var(--border);
-    border-radius: var(--radius);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    color: var(--muted);
-    margin-bottom: 28px;
-    background: var(--surface);
-    font-size: 0.8rem;
-    transition: border-color 0.15s;
-  }
-  .cover-placeholder:hover { border-color: var(--border-focus); }
-
-  /* ── Form ── */
-  .create-form { display: flex; flex-direction: column; gap: 0; }
-
-  .create-field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
-
-  .create-field-label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    transition: color 0.15s;
-  }
-
-  .create-field:focus-within .create-field-label { color: var(--ink); }
-
-  .create-input {
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    color: var(--ink);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 11px 14px;
-    outline: none;
-    width: 100%;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    font-size: 0.95rem;
-  }
-
-  .create-title-input {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(1.3rem, 2.5vw, 1.6rem);
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    color: var(--ink);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 16px;
-    outline: none;
-    width: 100%;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-
-  .create-input:focus,
-  .create-title-input:focus {
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 3px rgba(168, 164, 154, 0.12);
-  }
-
-  .create-input::placeholder,
-  .create-title-input::placeholder {
-    color: #c2bdb4;
-  }
-
-  /* Quill Editor Overrides */
-  .create-editor-wrapper {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    transition: border-color 0.2s;
-    background: var(--surface);
-  }
-
-  .create-editor-wrapper:focus-within {
-    border-color: var(--border-focus);
-  }
-
-  .create-editor-wrapper .ql-toolbar {
-    background: var(--paper);
-    border: none !important;
-    border-bottom: 1px solid var(--border) !important;
-    padding: 10px 12px;
-  }
-
-  .create-editor-wrapper .ql-toolbar button {
-    color: var(--muted);
-  }
-
-  .create-editor-wrapper .ql-toolbar button:hover,
-  .create-editor-wrapper .ql-toolbar button.ql-active {
-    color: var(--ink);
-  }
-
-  .create-editor-wrapper .ql-toolbar .ql-stroke {
-    stroke: currentColor;
-  }
-
-  .create-editor-wrapper .ql-toolbar .ql-fill {
-    fill: currentColor;
-  }
-
-  .create-editor-wrapper .ql-container {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 300;
-    color: var(--ink);
-    background: var(--surface);
-    border: none !important;
-    min-height: 320px;
-  }
-
-  .create-editor-wrapper .ql-editor {
-    padding: 16px 14px;
-    line-height: 1.8;
-  }
-
-  .create-editor-wrapper .ql-editor.ql-blank::before {
-    color: #c2bdb4;
-    font-style: normal;
-  }
-
-  /* Word count */
-  .create-word-count {
-    font-size: 0.72rem;
-    color: var(--muted);
-    text-align: right;
-    margin-top: -18px;
-    margin-bottom: 24px;
-  }
-
-  /* Tags input */
-  .tags-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    align-items: center;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 10px 12px;
-    min-height: 44px;
-    transition: border-color 0.2s;
-  }
-
-  .tags-wrapper:focus-within { border-color: var(--border-focus); }
-
-  .tag-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    background: rgba(155, 150, 137, 0.15);
-    color: var(--ink);
-    padding: 5px 10px;
-    border-radius: 4px;
-  }
-
-  .tag-remove {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--muted);
-    font-size: 1rem;
-    line-height: 1;
-    padding: 0;
-    transition: color 0.15s;
-  }
-  .tag-remove:hover { color: var(--accent); }
-
-  .tag-input {
-    border: none;
-    outline: none;
-    background: transparent;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 300;
-    color: var(--ink);
-    flex: 1;
-    min-width: 120px;
-    padding: 4px 0;
-  }
-  .tag-input::placeholder { color: #c2bdb4; }
-
-  .tags-hint {
-    font-size: 0.7rem;
-    color: var(--muted);
-    margin-top: 6px;
-  }
-
-  /* ── Error ── */
-  .create-error {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #fef2ef;
-    border: 1px solid #f5c6ba;
-    border-radius: var(--radius);
-    padding: 11px 14px;
-    font-size: 0.82rem;
-    color: var(--accent);
-    margin-bottom: 24px;
-  }
-
-  /* ── Footer ── */
-  .create-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 28px;
-    border-top: 1px solid var(--border);
-    margin-top: 8px;
-  }
-
-  .create-hint {
-    font-size: 0.72rem;
-    color: var(--muted);
-  }
-
-  .create-submit {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    background: var(--ink);
-    color: var(--surface);
-    border: none;
-    border-radius: var(--radius);
-    padding: 11px 28px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: background 0.15s, opacity 0.15s, transform 0.15s;
-  }
-  .create-submit:hover:not(:disabled) { background: #2e2e2b; transform: translateY(-1px); }
-  .create-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .create-spinner {
-    width: 13px;
-    height: 13px;
-    border: 2px solid rgba(245, 242, 235, 0.3);
-    border-top-color: var(--surface);
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-`;
+import TiptapEditor from "../components/TiptapEditor";
+import "./CreatePost.css";
 
 const MAX_TAGS = 5;
 
 function CreatePost() {
   const navigate = useNavigate();
 
-  const [title,      setTitle]      = useState("");
-  const [content,    setContent]    = useState("");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const [coverImage, setCoverImage] = useState("");
-  const [tags,       setTags]       = useState([]);
-  const [tagInput,   setTagInput]   = useState("");
+  const [tags, setTags] = useState([]);
+  const [tagInput, setTagInput] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [error,      setError]      = useState(null);
+  const [error, setError] = useState(null);
 
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
 
@@ -399,8 +67,6 @@ function CreatePost() {
 
   return (
     <>
-      <style>{styles}</style>
-
       <div className="create-wrapper">
         <div className="create-header">
           <p className="create-label">New story</p>
@@ -414,9 +80,9 @@ function CreatePost() {
         ) : (
           <div className="cover-placeholder">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
-              <rect x="3" y="3" width="18" height="18" rx="2"/>
-              <circle cx="8.5" cy="8.5" r="1.5"/>
-              <polyline points="21 15 16 10 5 21"/>
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
             </svg>
             <span>Cover image preview</span>
           </div>
@@ -425,9 +91,9 @@ function CreatePost() {
         {error && (
           <div className="create-error" role="alert">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="8" x2="12" y2="12"/>
-              <line x1="12" y1="16" x2="12.01" y2="16"/>
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
             </svg>
             {error}
           </div>
@@ -462,13 +128,11 @@ function CreatePost() {
           {/* Content */}
           <div className="create-field">
             <label className="create-field-label">Content</label>
-            <div className="create-editor-wrapper">
-              <QuillEditor
-                value={content}
-                onChange={setContent}
-                placeholder="Write your story…"
-              />
-            </div>
+            <TiptapEditor
+              value={content}
+              onChange={setContent}
+              placeholder="Write your story…"
+            />
           </div>
 
           <div className="create-word-count">
@@ -516,8 +180,8 @@ function CreatePost() {
                 <>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="22" y1="2" x2="11" y2="13"/>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
                   </svg>
                   Publish
                 </>

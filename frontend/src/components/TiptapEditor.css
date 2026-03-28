@@ -1,0 +1,287 @@
+/* Tiptap Editor Styles - Blog Theme */
+
+.tiptap-editor-wrapper {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+  transition: border-color 0.2s;
+}
+
+.tiptap-editor-wrapper:focus-within {
+  border-color: var(--border-focus);
+}
+
+/* Poetry Theme */
+.poetry-theme .tiptap-editor-wrapper {
+  border-color: var(--poetry-border);
+  background: var(--poetry-surface);
+}
+
+.poetry-theme .tiptap-editor-wrapper:focus-within {
+  border-color: var(--poetry-accent);
+}
+
+.poetry-theme .tiptap-toolbar {
+  background: var(--poetry-paper);
+  border-bottom-color: var(--poetry-border);
+}
+
+.poetry-theme .tiptap-toolbar button:hover:not(:disabled) {
+  background: rgba(124, 92, 184, 0.1);
+  color: var(--poetry-ink);
+}
+
+.poetry-theme .tiptap-toolbar button.is-active {
+  background: rgba(124, 92, 184, 0.1);
+  color: var(--poetry-accent);
+}
+
+.poetry-theme .tiptap-editor-content {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--poetry-ink);
+  background: var(--poetry-surface);
+  line-height: 2.1;
+}
+
+.poetry-theme .tiptap-editor-content em,
+.poetry-theme .tiptap-editor-content i {
+  font-style: italic !important;
+}
+
+.poetry-theme .tiptap-editor-content h1,
+.poetry-theme .tiptap-editor-content h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  color: var(--poetry-ink);
+}
+
+.poetry-theme .tiptap-editor-content blockquote {
+  border-left-color: var(--poetry-accent);
+  color: var(--poetry-muted);
+}
+
+.poetry-theme .tiptap-editor-content a {
+  color: var(--poetry-accent);
+}
+
+/* Poetry Theme Font Family Styles */
+.poetry-theme .tiptap-editor-content [style*="font-family"] {
+  font-family: inherit !important;
+}
+
+/* Toolbar */
+.tiptap-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 10px 12px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--border);
+}
+
+.tiptap-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tiptap-toolbar button:hover:not(:disabled) {
+  background: rgba(155, 150, 137, 0.1);
+  color: var(--ink);
+}
+
+.tiptap-toolbar button.is-active {
+  background: rgba(200, 80, 42, 0.1);
+  color: var(--accent);
+}
+
+.tiptap-toolbar button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.tiptap-toolbar button svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Toolbar Divider */
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  margin: 0 4px;
+  align-self: center;
+}
+
+/* Font Family Select */
+.font-family-select {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+  height: 32px;
+}
+
+.font-family-select:hover {
+  border-color: var(--border-focus);
+}
+
+.font-family-select:focus {
+  border-color: var(--border-focus);
+}
+
+/* Poetry Theme Font Select */
+.poetry-theme .font-family-select {
+  font-family: 'Montserrat', sans-serif;
+  background: var(--poetry-surface);
+  border-color: var(--poetry-border);
+  color: var(--poetry-ink);
+}
+
+.poetry-theme .font-family-select:hover,
+.poetry-theme .font-family-select:focus {
+  border-color: var(--poetry-accent);
+}
+
+/* Editor Content */
+.tiptap-editor-content {
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--ink);
+  background: var(--surface);
+  min-height: 320px;
+  padding: 16px 14px;
+  line-height: 1.8;
+  outline: none;
+}
+
+/* Default font family - only applied when no inline style exists */
+.tiptap-editor-content > *:not([style*="font-family"]),
+.tiptap-editor-content span:not([style*="font-family"]) {
+  font-family: 'DM Sans', sans-serif;
+}
+
+.tiptap-editor-content.ProseMirror-focused {
+  outline: none;
+}
+
+/* Italic Fix - Tiptap uses <em> tag */
+.tiptap-editor-content em {
+  font-style: italic !important;
+}
+
+.tiptap-editor-content i {
+  font-style: italic;
+}
+
+/* Poetry Theme Default Font */
+.poetry-theme .tiptap-editor-content > *:not([style*="font-family"]),
+.poetry-theme .tiptap-editor-content span:not([style*="font-family"]) {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Content Styles */
+.tiptap-editor-content h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.9rem;
+  font-weight: 400;
+  margin: 1.8em 0 0.6em;
+  color: var(--ink);
+}
+
+.tiptap-editor-content h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 1.6em 0 0.6em;
+  color: var(--ink);
+}
+
+.tiptap-editor-content p {
+  margin: 1.2em 0;
+}
+
+.tiptap-editor-content strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.tiptap-editor-content em {
+  font-style: italic;
+}
+
+.tiptap-editor-content s {
+  color: var(--muted);
+}
+
+.tiptap-editor-content ul,
+.tiptap-editor-content ol {
+  margin: 1.2em 0;
+  padding-left: 2em;
+}
+
+.tiptap-editor-content li {
+  margin: 0.6em 0;
+  line-height: 1.85;
+}
+
+.tiptap-editor-content a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.tiptap-editor-content blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1.2em;
+  margin: 1.4em 0;
+  font-style: italic;
+  color: var(--muted);
+}
+
+.tiptap-editor-content code {
+  background: rgba(155, 150, 137, 0.15);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.tiptap-editor-content pre {
+  background: rgba(155, 150, 137, 0.1);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 1.2em 0;
+}
+
+.tiptap-editor-content pre code {
+  background: transparent;
+  padding: 0;
+}
+
+/* Placeholder */
+.tiptap-editor-content .is-editor-empty:first-child::before {
+  color: #c2bdb4;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
