@@ -1,0 +1,263 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+.create-focused-wrapper {
+  background: #ffffff;
+  min-height: 100vh;
+  color: #191919;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+}
+
+/* ── Hover Trigger Zone ── */
+.nav-trigger-zone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  z-index: 100;
+}
+
+/* ── Focused Navbar ── */
+.create-nav-focused {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.98);
+  border-bottom: 1px solid #f2f2f2;
+  z-index: 101;
+  display: flex;
+  align-items: center;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.create-nav-focused.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.create-nav-focused.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.create-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.create-nav-logo {
+  font-family: 'Lora', serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  cursor: pointer;
+  letter-spacing: -0.02em;
+}
+
+.create-nav-status {
+  margin-left: 20px;
+  font-size: 0.85rem;
+  color: #757575;
+  border-left: 1px solid #eee;
+  padding-left: 20px;
+}
+
+.create-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.create-nav-back {
+  background: none;
+  border: none;
+  color: #757575;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.create-publish-btn {
+  background: #1a8917;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 99px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.create-publish-btn:hover {
+  opacity: 0.9;
+}
+
+/* ── Nav Indicator Arrow ── */
+.nav-indicator-arrow {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ccc;
+  cursor: pointer;
+  animation: bounce 2s infinite;
+  z-index: 99;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
+  40% {transform: translateX(-50%) translateY(-5px);}
+  60% {transform: translateX(-50%) translateY(-3px);}
+}
+
+/* ── Main Workspace ── */
+.create-main-focused {
+  padding: 100px 24px 100px;
+  display: flex;
+  justify-content: center;
+}
+
+.create-editor-container {
+  max-width: 740px;
+  width: 100%;
+}
+
+/* ── Header Minimal ── */
+.create-header-minimal {
+  margin-bottom: 40px;
+}
+
+.add-header-prompt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ccc;
+  font-size: 0.95rem;
+}
+
+.add-header-prompt input {
+  border: none;
+  background: none;
+  width: 100%;
+  outline: none;
+  color: #191919;
+}
+
+.create-header-preview {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.create-header-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-header-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Title Textarea ── */
+.create-title-textarea {
+  width: 100%;
+  border: none;
+  background: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #191919;
+  resize: none;
+  outline: none;
+  margin-bottom: 20px;
+  overflow: hidden;
+  letter-spacing: -0.03em;
+}
+
+.create-title-textarea::placeholder {
+  color: #eee;
+}
+
+/* ── Editor Wrapper ── */
+.create-editor-wrapper {
+  margin-bottom: 32px;
+}
+
+.create-editor-wrapper .tiptap-editor-content {
+  font-family: 'Lora', serif;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: #292929;
+}
+
+.create-editor-wrapper .tiptap-editor-content em {
+  font-style: italic !important;
+}
+
+.create-editor-wrapper .tiptap-editor-content strong {
+  font-weight: bold !important;
+}
+
+/* ── Footer Minimal ── */
+.create-footer-minimal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #757575;
+  border-top: 1px solid #f2f2f2;
+  padding-top: 24px;
+}
+
+.footer-dot {
+  opacity: 0.5;
+}
+
+/* ── Error Minimal ── */
+.create-error-minimal {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff5f5;
+  color: #c53030;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 32px;
+  font-size: 0.9rem;
+}
+
+.create-error-minimal .material-symbols-outlined {
+  font-size: 20px;
+}
+
+@media (max-width: 768px) {
+  .create-title-textarea {
+    font-size: 2.25rem;
+  }
+}

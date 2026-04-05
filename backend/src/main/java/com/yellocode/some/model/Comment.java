@@ -24,8 +24,8 @@ public class Comment {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "article_id", nullable = false)
     @JsonBackReference
-    private Post post;
+    private Article article;
 
 }

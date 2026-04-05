@@ -1,9 +1,7 @@
 package com.yellocode.some.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -11,7 +9,7 @@ import java.util.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Post {
+public class Story {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,20 +21,18 @@ public class Post {
 
     private String author;
 
-    private boolean published;
+    private String genre;
+
+    private int readingTime; // in minutes
+
+    private String coverImage;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
-    private String coverImage;  // ← new
-
     @ElementCollection
-    @CollectionTable(name = "post_tags", joinColumns = @JoinColumn(name = "post_id"))
+    @CollectionTable(name = "story_tags", joinColumns = @JoinColumn(name = "story_id"))
     @Column(name = "tag")
-    private List<String> tags = new ArrayList<>();  // ← new
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<Comment> comments = new ArrayList<>();
+    private List<String> tags = new ArrayList<>();
 }

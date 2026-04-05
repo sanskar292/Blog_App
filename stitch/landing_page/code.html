@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#fbf9f4",
+              "on-tertiary-fixed": "#002020",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed-variant": "#474746",
+              "on-error": "#ffffff",
+              "inverse-on-surface": "#f2f1ec",
+              "on-surface-variant": "#444748",
+              "inverse-primary": "#c8c6c5",
+              "surface-variant": "#e4e2dd",
+              "on-primary-fixed": "#1c1b1b",
+              "primary": "#000000",
+              "surface-dim": "#dbdad5",
+              "secondary-fixed-dim": "#e1c294",
+              "surface-container-lowest": "#ffffff",
+              "inverse-surface": "#30312e",
+              "surface": "#fbf9f4",
+              "surface-container": "#f0eee9",
+              "on-error-container": "#93000a",
+              "tertiary-fixed": "#c6e9e9",
+              "on-secondary-fixed-variant": "#584320",
+              "tertiary-fixed-dim": "#abcdcd",
+              "on-primary-container": "#858383",
+              "on-secondary-fixed": "#281900",
+              "primary-container": "#1c1b1b",
+              "outline-variant": "#c4c7c7",
+              "on-surface": "#1b1c19",
+              "surface-tint": "#5f5e5e",
+              "outline": "#747878",
+              "primary-fixed": "#e5e2e1",
+              "primary-fixed-dim": "#c8c6c5",
+              "on-background": "#1b1c19",
+              "surface-container-low": "#f5f3ee",
+              "on-tertiary-fixed-variant": "#2c4c4c",
+              "secondary-fixed": "#fedeae",
+              "secondary-container": "#fedeae",
+              "error": "#ba1a1a",
+              "surface-container-highest": "#e4e2dd",
+              "surface-container-high": "#eae8e3",
+              "tertiary": "#000000",
+              "background": "#fbf9f4",
+              "secondary": "#725b35",
+              "on-primary": "#ffffff",
+              "error-container": "#ffdad6",
+              "on-tertiary-container": "#698a8a",
+              "on-secondary": "#ffffff",
+              "tertiary-container": "#002020",
+              "on-secondary-container": "#78613a"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Work Sans"],
+              "label": ["Work Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Work Sans', sans-serif; }
+        .serif-text { font-family: 'Noto Serif', serif; }
+        .glass-nav {
+            background-color: rgba(245, 243, 238, 0.85);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 glass-nav">
+<div class="flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-serif tracking-tighter text-black dark:text-white">Versa</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="font-['Noto_Serif'] antialiased text-[#725b35] font-semibold border-b-2 border-[#725b35] pb-1 hover:text-[#725b35] transition-colors duration-300" href="#">Poetry</a>
+<a class="font-['Noto_Serif'] antialiased text-[#444748] dark:text-[#c4c7c7] hover:text-[#725b35] transition-colors duration-300" href="#">Articles</a>
+<a class="font-['Noto_Serif'] antialiased text-[#444748] dark:text-[#c4c7c7] hover:text-[#725b35] transition-colors duration-300" href="#">Stories</a>
+</div>
+<div class="flex items-center gap-6">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">search</span>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-lg font-medium transition-transform duration-200 ease-in-out hover:scale-95">Create</button>
+</div>
+</div>
+</nav>
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="relative min-h-[870px] flex items-center justify-center overflow-hidden bg-primary-container">
+<div class="absolute inset-0 z-0 opacity-40">
+<img alt="" class="w-full h-full object-cover" data-alt="dramatic high-contrast wide shot of an elegant library with dust motes dancing in shafts of afternoon sunlight hitting dark wood bookshelves" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlrKWOdRXqdBcZRRkZIAOQZr8-FwZ8kOQaaM21GXo8srcF73Kel6GnxoYO07CvhMbRUNUvlYud6EjAAwCYkG7QM31jLt02PkzJVgMuJdUCg2KsZc0e21Ns4Uj8UIZ779CPj-w0aU90D34s8ZbztMIkGsgxC5W1Ob9jBC-mbaU795Nf1fp753p-Xvk1_7mjTBhlFQObjDNXkTY0QGI685Zd5HuxB8dsW3QdVxxkN_qbNILJwHt5n4vfi90bIQLh50VOdBcyw6eIOps"/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-b from-primary/60 to-primary-container z-10"></div>
+<div class="relative z-20 text-center max-w-4xl px-6">
+<span class="text-secondary tracking-[0.3em] uppercase text-xs font-semibold mb-6 block">Editorial Excellence</span>
+<h1 class="serif-text text-5xl md:text-8xl text-on-primary mb-8 leading-[1.1] tracking-tight">
+                    A Home for Every Kind of Word.
+                </h1>
+<p class="text-on-primary-container text-lg md:text-xl font-light max-w-2xl mx-auto mb-10 leading-relaxed">
+                    A professional sanctuary for curators of thought. Whether you craft verses, investigate truths, or weave epics, Versa elevates your voice.
+                </p>
+<div class="flex flex-col md:flex-row gap-4 justify-center">
+<button class="bg-on-primary text-primary px-10 py-4 rounded-lg font-semibold text-lg hover:bg-surface-variant transition-all">Get Started</button>
+<button class="bg-transparent border border-outline-variant/30 text-on-primary px-10 py-4 rounded-lg font-semibold text-lg hover:bg-white/10 transition-all">Explore Library</button>
+</div>
+</div>
+</section>
+<!-- Section 1: Poetry -->
+<section class="py-32 bg-surface">
+<div class="max-w-screen-xl mx-auto px-8">
+<div class="flex flex-col md:flex-row items-center gap-20">
+<div class="w-full md:w-1/2 space-y-8">
+<span class="text-secondary font-medium tracking-widest uppercase text-xs">Section 01</span>
+<h2 class="serif-text text-5xl text-on-surface leading-tight">Poetry: Atmospheric. Minimalist. Centered on the Word.</h2>
+<div class="w-16 h-[2px] bg-secondary"></div>
+<p class="text-on-surface-variant text-lg leading-relaxed font-light">
+                            Experience poetry in its purest form. Our interface strips away the noise, leaving only the rhythm of the line and the shape of the stanza. Every poem is a gallery piece.
+                        </p>
+<ul class="space-y-4 text-on-surface-variant italic serif-text text-lg">
+<li>— Dynamic spacing for visual breath</li>
+<li>— Curated typography that speaks</li>
+<li>— Focus-mode reading experience</li>
+</ul>
+</div>
+<div class="w-full md:w-1/2 bg-surface-container-low p-12 rounded-xl">
+<div class="serif-text text-center space-y-6 text-on-surface max-w-sm mx-auto">
+<h3 class="text-2xl font-bold italic mb-8">The Silent Tide</h3>
+<p>The moon pulls light<br/>from the edges of the room,</p>
+<p>and we are left<br/>with the echo of bones,</p>
+<p>the salt on the tongue,<br/>the ink on the wrist.</p>
+<p class="text-secondary pt-8">— Elena Voss</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Articles (Bento/Grid Style) -->
+<section class="py-32 bg-surface-container-low">
+<div class="max-w-screen-xl mx-auto px-8">
+<div class="mb-20">
+<span class="text-secondary font-medium tracking-widest uppercase text-xs">Section 02</span>
+<h2 class="serif-text text-5xl text-on-surface mt-4">Articles: Structured. Editorial. Professional.</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<div class="md:col-span-8 group relative overflow-hidden rounded-xl bg-surface h-[500px]">
+<img alt="" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="top-down artistic view of a modern professional workstation with a thin laptop, a fountain pen, and a minimalist notebook" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiAjOg3o1dvJ2Tm0ZxUAAl9esL4zDsx68i6jVeLCMdELrE-ifQmOwFAJvEK6sua1g0Q12zOX1Ie70RRgG-ezpnjAI1FePlnwT0YEZpwbTuAhAQmGPhmJOi5uaBWzCI0lNH1P8E7fxnGMUQ9wsD88aPOnoPRXGYmzPlnky8x2hYhq2T2KeC_K8CjNM42aXz3hiUkh9qrJoClKkm3y7taOtgqZsGxzaQvh5kJAc2ukHO3gu3zLekDVywSgs6eMPTe7_Z1kFggCN4Dy4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-10">
+<span class="bg-secondary text-white text-[10px] uppercase tracking-tighter px-2 py-1 w-fit mb-4">Deep Dive</span>
+<h3 class="serif-text text-3xl text-white mb-4">The Future of Long-form Journalism in the Age of AI</h3>
+<p class="text-gray-300 max-w-md line-clamp-2 font-light">How human narrative remains the final frontier of authentic connection in a digital-first world.</p>
+</div>
+</div>
+<div class="md:col-span-4 flex flex-col gap-8">
+<div class="bg-surface p-8 rounded-xl h-1/2 flex flex-col justify-center">
+<span class="text-secondary text-xs uppercase font-bold tracking-widest mb-3">Politics</span>
+<h4 class="serif-text text-xl mb-3">The New Urbanism: Cities Built for People</h4>
+<p class="text-on-surface-variant text-sm line-clamp-2">A comprehensive review of the 15-minute city movement in Europe.</p>
+</div>
+<div class="bg-primary text-on-primary p-8 rounded-xl h-1/2 flex flex-col justify-center">
+<span class="text-secondary-fixed text-xs uppercase font-bold tracking-widest mb-3">Technology</span>
+<h4 class="serif-text text-xl mb-3">Designing Beyond the Glass: Haptics and Soul</h4>
+<p class="text-on-primary-container text-sm line-clamp-2">Why the next interface will be felt, not just seen.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Stories -->
+<section class="py-32 bg-surface">
+<div class="max-w-screen-xl mx-auto px-8">
+<div class="flex flex-col md:flex-row-reverse items-center gap-20">
+<div class="w-full md:w-1/2 space-y-8">
+<span class="text-secondary font-medium tracking-widest uppercase text-xs">Section 03</span>
+<h2 class="serif-text text-5xl text-on-surface leading-tight">Stories: Immersive. Narrative. Flowing.</h2>
+<div class="w-16 h-[2px] bg-secondary"></div>
+<p class="text-on-surface-variant text-lg leading-relaxed font-light">
+                            Flowing narrative experiences that feel as deep as a novel. Use full-bleed imagery, parallax scrolls, and audio-narrative integrations to let your readers get lost in your world.
+                        </p>
+<div class="pt-4">
+<button class="flex items-center gap-3 text-primary font-bold hover:gap-5 transition-all">
+<span>Learn about immersive layouts</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="w-full md:w-1/2">
+<div class="relative">
+<div class="aspect-[4/5] rounded-xl overflow-hidden shadow-2xl">
+<img alt="" class="w-full h-full object-cover" data-alt="cinematic shot of a lone person walking through a misty alpine forest with towering pine trees and ethereal soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3ovfNC7zhhIKGOzM5nQEbebWvajSgfOC0z-EPSptR4m3eoicPmjh-GKbU_ouLDLPcV8bbFy6-0XpX-xhTuhOnlKOf6d_D3V_k3TAgZk6jguqPU0VXIczNrBSP-IjKLEd0y8uxz_zeZErOSrUWYW-PgcqupqQWfXtHkYnWkJKpdTECAtOkHKFjpv1qKkeobmKglAy8JwIQn-4n44rU0M4TX7FPcmok6OGtDsw9Sp0PBapTW-8H__sybshX_NaG2SlPZW9katasu8s"/>
+</div>
+<!-- Editorial Overlay Card -->
+<div class="absolute -bottom-10 -right-10 bg-white p-10 max-w-xs shadow-xl hidden md:block">
+<span class="block italic text-secondary mb-2 serif-text">Featured Series</span>
+<h4 class="text-xl font-bold mb-4">The Whispers of Gray Peak</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-6">A twelve-part interactive odyssey into the heart of the forgotten range.</p>
+<span class="text-xs uppercase tracking-widest font-semibold border-b border-black pb-1 cursor-pointer">Read Part One</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Subscription / CTA -->
+<section class="py-24 bg-surface-container-highest">
+<div class="max-w-4xl mx-auto px-8 text-center">
+<h2 class="serif-text text-4xl mb-6">Join a community of 50,000+ creators.</h2>
+<p class="text-on-surface-variant mb-10 text-lg font-light">Receive our weekly curated selection of the finest poetry, articles, and stories directly in your inbox.</p>
+<div class="flex flex-col sm:flex-row gap-0 max-w-md mx-auto rounded-lg overflow-hidden border border-outline-variant">
+<input class="bg-surface w-full px-6 py-4 focus:ring-0 border-none text-on-surface" placeholder="your@email.com" type="email"/>
+<button class="bg-primary text-on-primary px-8 py-4 font-bold whitespace-nowrap">Subscribe</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-[#f5f3ee] dark:bg-[#121212] w-full py-12 px-8 border-t border-[#c4c7c7]/15">
+<div class="flex flex-col md:flex-row justify-between items-center max-w-screen-2xl mx-auto">
+<div class="mb-8 md:mb-0">
+<span class="text-lg font-serif text-black dark:text-white block mb-2">Versa Editorial</span>
+<span class="font-['Work_Sans'] text-xs uppercase tracking-widest text-[#444748] dark:text-[#c4c7c7]">© 2024 Versa Editorial. All rights reserved.</span>
+</div>
+<div class="flex gap-12">
+<a class="font-['Work_Sans'] text-xs uppercase tracking-widest text-[#444748] hover:text-black transition-colors opacity-80 hover:opacity-100" href="#">About</a>
+<a class="font-['Work_Sans'] text-xs uppercase tracking-widest text-[#444748] hover:text-black transition-colors opacity-80 hover:opacity-100" href="#">Terms</a>
+<a class="font-['Work_Sans'] text-xs uppercase tracking-widest text-[#444748] hover:text-black transition-colors opacity-80 hover:opacity-100" href="#">Contact</a>
+</div>
+<div class="mt-8 md:mt-0 flex gap-6">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">public</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">alternate_email</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">auto_awesome</span>
+</div>
+</div>
+</footer>
+</body></html>

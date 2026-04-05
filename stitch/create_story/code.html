@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Versa | Writer's Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Work+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "outline-variant": "#c4c7c7",
+                        "primary": "#000000",
+                        "surface-container": "#f0eee9",
+                        "primary-fixed": "#e5e2e1",
+                        "surface-container-high": "#eae8e3",
+                        "surface-variant": "#e4e2dd",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#c6e9e9",
+                        "on-background": "#1b1c19",
+                        "on-secondary-fixed": "#281900",
+                        "secondary-fixed-dim": "#e1c294",
+                        "primary-container": "#1c1b1b",
+                        "on-secondary-fixed-variant": "#584320",
+                        "on-tertiary-container": "#698a8a",
+                        "surface-tint": "#5f5e5e",
+                        "inverse-on-surface": "#f2f1ec",
+                        "tertiary": "#000000",
+                        "inverse-primary": "#c8c6c5",
+                        "tertiary-container": "#002020",
+                        "on-tertiary-fixed": "#002020",
+                        "inverse-surface": "#30312e",
+                        "on-primary-fixed-variant": "#474746",
+                        "secondary-container": "#fedeae",
+                        "secondary": "#725b35",
+                        "on-primary-container": "#858383",
+                        "on-tertiary-fixed-variant": "#2c4c4c",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#78613a",
+                        "surface": "#fbf9f4",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "on-surface-variant": "#444748",
+                        "surface-container-highest": "#e4e2dd",
+                        "tertiary-fixed-dim": "#abcdcd",
+                        "surface-bright": "#fbf9f4",
+                        "on-surface": "#1b1c19",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "outline": "#747878",
+                        "on-primary-fixed": "#1c1b1b",
+                        "surface-dim": "#dbdad5",
+                        "on-secondary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "background": "#fbf9f4",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f5f3ee",
+                        "secondary-fixed": "#fedeae"
+                    },
+                    fontFamily: {
+                        "headline": ["Noto Serif"],
+                        "body": ["Work Sans"],
+                        "label": ["Work Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .serif-editor { font-family: 'Noto Serif', serif; }
+        .sans-ui { font-family: 'Work Sans', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased overflow-hidden">
+<!-- Top Navigation (Shell Component) -->
+<nav class="fixed top-0 w-full z-50 bg-[#f5f3ee]/85 dark:bg-[#1c1b1b]/85 backdrop-blur-md font-['Noto_Serif'] antialiased">
+<div class="flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-serif tracking-tighter text-black dark:text-white">Versa</span>
+<div class="hidden md:flex gap-6">
+<a class="text-[#444748] dark:text-[#c4c7c7] hover:text-[#725b35] transition-colors duration-300" href="#">Poetry</a>
+<a class="text-[#444748] dark:text-[#c4c7c7] hover:text-[#725b35] transition-colors duration-300" href="#">Articles</a>
+<a class="text-[#725b35] font-semibold border-b-2 border-[#725b35] pb-1" href="#">Stories</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<span class="text-on-surface-variant text-sm italic">Saving...</span>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-md font-medium hover:opacity-90 transition-all scale-95 duration-200 ease-in-out">Publish</button>
+</div>
+</div>
+</nav>
+<main class="flex h-screen pt-20">
+<!-- Chapter Navigation (SideNavBar) -->
+<aside class="h-full w-64 fixed left-0 top-0 pt-20 bg-[#fbf9f4] dark:bg-[#121212] flex flex-col gap-4 py-8 border-r border-outline-variant/10">
+<div class="px-6 mb-4">
+<h2 class="font-headline text-lg text-primary">Library</h2>
+<p class="font-label text-xs tracking-widest text-on-surface-variant uppercase">Your Curation</p>
+</div>
+<nav class="flex flex-col gap-1 pr-4">
+<div class="flex items-center gap-3 px-6 py-3 text-black dark:text-white font-bold bg-[#e4e2dd] dark:bg-[#1c1b1b] rounded-r-full cursor-pointer group">
+<span class="material-symbols-outlined text-xl" data-icon="rss_feed">rss_feed</span>
+<span class="font-label text-sm tracking-wide">Personal Feed</span>
+</div>
+<div class="flex items-center gap-3 px-6 py-3 text-[#444748] dark:text-[#c4c7c7] hover:bg-[#f5f3ee] dark:hover:bg-[#1c1b1b] transition-all duration-400 ease-out cursor-pointer group">
+<span class="material-symbols-outlined text-xl" data-icon="bookmark">bookmark</span>
+<span class="font-label text-sm tracking-wide">Saved Items</span>
+</div>
+<div class="flex items-center gap-3 px-6 py-3 text-[#444748] dark:text-[#c4c7c7] hover:bg-[#f5f3ee] dark:hover:bg-[#1c1b1b] transition-all duration-400 ease-out cursor-pointer group">
+<span class="material-symbols-outlined text-xl" data-icon="settings">settings</span>
+<span class="font-label text-sm tracking-wide">Settings</span>
+</div>
+</nav>
+<div class="mt-8 px-6 border-t border-outline-variant/10 pt-8">
+<h3 class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-4">Manuscript</h3>
+<div class="space-y-4">
+<div class="flex flex-col gap-2">
+<span class="text-xs text-secondary font-medium italic">Chapter I</span>
+<span class="text-sm font-headline">The Quiet Descent</span>
+</div>
+<div class="flex flex-col gap-2 opacity-50">
+<span class="text-xs text-on-surface-variant font-medium italic">Chapter II</span>
+<span class="text-sm font-headline">Echoes in the Hall</span>
+</div>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors mt-6">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+<span class="text-xs font-label">Add Chapter</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- Main Workspace (Editor Canvas) -->
+<section class="flex-1 ml-64 mr-80 overflow-y-auto no-scrollbar bg-surface relative">
+<div class="max-w-3xl mx-auto pt-20 pb-40 px-8">
+<!-- Title Field -->
+<textarea class="w-full bg-transparent border-none focus:ring-0 font-headline text-5xl leading-tight text-primary placeholder:text-surface-container-highest resize-none p-0 mb-12" placeholder="Title your odyssey..." rows="2"></textarea>
+<!-- Distraction-free Body Editor -->
+<div class="serif-editor text-xl leading-relaxed text-on-surface space-y-8 min-h-[614px] outline-none" contenteditable="true">
+<p>It began as a whisper, no louder than the rustle of dry leaves against a cobblestone path. The city was still, caught in that fragile moment before dawn when the light is neither blue nor grey, but a secret shared between the earth and the sky.</p>
+<p>Elias adjusted the weight of his satchel. The leather was worn thin, a map of his own restless journeys. He had come to the Archive not for gold or glory, but for a single line of poetry lost to the fires of the Third Age.</p>
+<div class="py-12 flex justify-center text-secondary-fixed-dim pointer-events-none select-none">
+<span class="material-symbols-outlined text-3xl" data-icon="flare">flare</span>
+</div>
+<p class="italic text-on-surface-variant">"In the silence where the ink begins to bleed, lies the truth that every soul shall need..."</p>
+</div>
+</div>
+<!-- Subtle Narrative Floating Toolbar -->
+<div class="fixed bottom-12 left-1/2 -translate-x-1/2 bg-surface-container-lowest/90 backdrop-blur-xl border border-outline-variant/15 px-6 py-3 rounded-full flex items-center gap-6 shadow-xl shadow-on-surface/5">
+<button class="group flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="format_quote">format_quote</span>
+<span class="text-xs font-label uppercase tracking-widest hidden group-hover:block">Dialogue</span>
+</button>
+<div class="w-px h-4 bg-outline-variant/20"></div>
+<button class="group flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="horizontal_rule">horizontal_rule</span>
+<span class="text-xs font-label uppercase tracking-widest hidden group-hover:block">Scene Break</span>
+</button>
+<div class="w-px h-4 bg-outline-variant/20"></div>
+<button class="group flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="text-xs font-label uppercase tracking-widest hidden group-hover:block">Verse</span>
+</button>
+<div class="w-px h-4 bg-outline-variant/20"></div>
+<button class="group flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span class="text-xs font-label uppercase tracking-widest hidden group-hover:block">Style</span>
+</button>
+</div>
+</section>
+<!-- Story Settings Panel -->
+<aside class="fixed right-0 top-0 h-full w-80 bg-surface-container-low pt-24 px-8 border-l border-outline-variant/10 overflow-y-auto">
+<h3 class="font-headline text-xl mb-8">Story Settings</h3>
+<!-- Cover Upload -->
+<div class="space-y-4 mb-10">
+<label class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Cover Image</label>
+<div class="relative group cursor-pointer aspect-[3/4] bg-surface-container-highest rounded-lg overflow-hidden flex items-center justify-center border-2 border-dashed border-outline-variant/30 hover:border-secondary transition-all">
+<img alt="Story Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-multiply transition-transform duration-700 group-hover:scale-105" data-alt="atmospheric close up of ancient leather book spine and weathered paper edges with soft moody morning sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQwflvbuWGYmKPTDMYLKF4l5tFqyfD5Km54UR7xpY2p3mS63_17UHeSHXcasSqDHglHjv9Z9PdOnBmKblzH1xYqGFFmOjqE9150azeRrtUIzAFEhubsGxHePLRTDkgUesQuffw85__5G173sMDgnPZe7YhpA2-iohdEHi2DIZOwpbU2DQGC1QhPKVWqHc12O0y3yEyU0o0qL_ZUnuQ93RAL6Y_qsycRHA5nH_o14i0Y2bQtHaLi63Yh6j7C33l8uitMNv98PGYwmg"/>
+<div class="relative z-10 flex flex-col items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-3xl" data-icon="upload_file">upload_file</span>
+<span class="text-xs font-label">Replace Cover</span>
+</div>
+</div>
+</div>
+<!-- Tagging & Meta -->
+<div class="space-y-6">
+<div class="space-y-2">
+<label class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Genre</label>
+<select class="w-full bg-surface-container-lowest border-none rounded-md text-sm font-body py-3 px-4 focus:ring-1 focus:ring-secondary/20">
+<option>Literary Fiction</option>
+<option>Speculative Poetry</option>
+<option>Historical Narrative</option>
+<option>Magical Realism</option>
+</select>
+</div>
+<div class="space-y-3">
+<label class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Narrative Tags</label>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-[10px] uppercase tracking-wider rounded-full flex items-center gap-1">
+                            Atmospheric <span class="material-symbols-outlined text-xs" data-icon="close">close</span>
+</span>
+<span class="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-[10px] uppercase tracking-wider rounded-full flex items-center gap-1">
+                            Mystery <span class="material-symbols-outlined text-xs" data-icon="close">close</span>
+</span>
+<button class="px-3 py-1 border border-outline-variant/30 text-on-surface-variant text-[10px] uppercase tracking-wider rounded-full hover:border-secondary transition-colors">
+                            + Add Tag
+                        </button>
+</div>
+</div>
+<div class="space-y-2 pt-6 border-t border-outline-variant/10">
+<label class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Visibility</label>
+<div class="flex items-center justify-between py-2">
+<span class="text-sm font-body">Public Preview</span>
+<div class="w-10 h-5 bg-primary rounded-full relative">
+<div class="absolute right-0.5 top-0.5 w-4 h-4 bg-on-primary rounded-full shadow-sm"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Meta (Embedded) -->
+<div class="mt-20 opacity-40 space-y-2">
+<div class="flex justify-between text-[10px] font-label uppercase tracking-widest">
+<span>Words</span>
+<span>1,240</span>
+</div>
+<div class="flex justify-between text-[10px] font-label uppercase tracking-widest">
+<span>Reading Time</span>
+<span>5 Min</span>
+</div>
+</div>
+</aside>
+</main>
+<!-- Footer Component (suppressed logic check: visible on studio home/index, but for edit screens we use a minimal persistent indicator) -->
+<footer class="fixed bottom-0 left-0 w-full z-10 py-4 px-8 bg-surface-container-low border-t border-outline-variant/15 flex justify-between items-center md:hidden">
+<span class="text-lg font-serif text-black">Versa</span>
+<button class="bg-primary text-on-primary px-4 py-1 rounded text-xs">Menu</button>
+</footer>
+</body></html>

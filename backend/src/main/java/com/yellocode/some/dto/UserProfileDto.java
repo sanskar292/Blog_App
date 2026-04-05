@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserProfileDto {
     private String username;
-    private Long postsCount;
+    private Long articlesCount;
 }

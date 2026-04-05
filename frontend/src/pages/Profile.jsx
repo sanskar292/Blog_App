@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import API, { deletePostById, getLoggedInUser } from "../api";
+import API, { deleteArticleById, getLoggedInUser } from "../api";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -154,10 +154,10 @@ const styles = `
     border-radius: 20px;
   }
 
-  /* ── Posts List ── */
-  .profile-posts-list { display: flex; flex-direction: column; gap: 12px; }
+  /* ── articles List ── */
+  .profile-articles-list { display: flex; flex-direction: column; gap: 12px; }
 
-  .post-card {
+  .article-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -168,7 +168,7 @@ const styles = `
     box-shadow: var(--shadow);
   }
 
-  .post-card::before {
+  .article-card::before {
     content: '';
     position: absolute;
     left: 0;
@@ -181,37 +181,37 @@ const styles = `
     transition: transform 0.25s ease;
   }
 
-  .post-card:hover {
+  .article-card:hover {
     border-color: var(--border-dark);
     box-shadow: var(--shadow-hover);
     transform: translateY(-1px);
   }
 
-  .post-card:hover::before { transform: scaleY(1); }
+  .article-card:hover::before { transform: scaleY(1); }
 
-  .post-card.deleting {
+  .article-card.deleting {
     opacity: 0.4;
     pointer-events: none;
     transform: scale(0.98);
   }
 
-  .post-row {
+  .article-row {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 20px;
     align-items: start;
   }
 
-  .post-row-body { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .article-row-body { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 
-  .post-row-top {
+  .article-row-top {
     display: flex;
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
   }
 
-  .post-row-author {
+  .article-row-author {
     font-size: 0.7rem;
     font-weight: 600;
     color: var(--accent);
@@ -222,7 +222,7 @@ const styles = `
     border-radius: 20px;
   }
 
-  .post-row-dot {
+  .article-row-dot {
     width: 3px;
     height: 3px;
     border-radius: 50%;
@@ -230,13 +230,13 @@ const styles = `
     flex-shrink: 0;
   }
 
-  .post-row-date {
+  .article-row-date {
     font-size: 0.75rem;
     color: var(--muted);
     font-weight: 400;
   }
 
-  .post-row-read-time {
+  .article-row-read-time {
     display: inline-flex;
     align-items: center;
     gap: 4px;
@@ -245,14 +245,14 @@ const styles = `
     font-weight: 400;
   }
 
-  .post-row-read-time svg { opacity: 0.5; }
+  .article-row-read-time svg { opacity: 0.5; }
 
-  .post-row-title-link {
+  .article-row-title-link {
     text-decoration: none;
     color: inherit;
   }
 
-  .post-row-title {
+  .article-row-title {
     font-family: 'Instrument Serif', serif;
     font-size: 1.25rem;
     font-weight: 400;
@@ -266,9 +266,9 @@ const styles = `
     overflow: hidden;
   }
 
-  .post-row-title-link:hover .post-row-title { color: var(--accent); }
+  .article-row-title-link:hover .article-row-title { color: var(--accent); }
 
-  .post-row-excerpt {
+  .article-row-excerpt {
     font-size: 0.88rem;
     font-weight: 300;
     line-height: 1.7;
@@ -279,7 +279,7 @@ const styles = `
     overflow: hidden;
   }
 
-  .post-row-footer {
+  .article-row-footer {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -287,7 +287,7 @@ const styles = `
     margin-top: 2px;
   }
 
-  .post-row-tag {
+  .article-row-tag {
     font-size: 0.66rem;
     font-weight: 600;
     letter-spacing: 0.06em;
@@ -299,12 +299,12 @@ const styles = `
     transition: all 0.15s;
   }
 
-  .post-card:hover .post-row-tag {
+  .article-card:hover .article-row-tag {
     background: var(--ink);
     color: var(--surface);
   }
 
-  .post-row-thumb {
+  .article-row-thumb {
     width: 120px;
     height: 84px;
     object-fit: cover;
@@ -313,7 +313,7 @@ const styles = `
     background: var(--border);
   }
 
-  .post-row-thumb-placeholder {
+  .article-row-thumb-placeholder {
     width: 120px;
     height: 84px;
     border-radius: var(--radius);
@@ -325,8 +325,8 @@ const styles = `
     color: var(--border-dark);
   }
 
-  /* ── Post Actions ── */
-  .post-row-actions {
+  /* ── article Actions ── */
+  .article-row-actions {
     display: flex;
     gap: 16px;
     margin-top: 14px;
@@ -334,7 +334,7 @@ const styles = `
     border-top: 1px solid var(--border);
   }
 
-  .post-row-edit, .post-row-delete {
+  .article-row-edit, .article-row-delete {
     background: none;
     border: none;
     cursor: pointer;
@@ -352,11 +352,11 @@ const styles = `
     color: var(--muted);
   }
 
-  .post-row-edit:hover { color: var(--ink); }
-  .post-row-delete:hover { color: var(--accent); }
+  .article-row-edit:hover { color: var(--ink); }
+  .article-row-delete:hover { color: var(--accent); }
 
   /* ── Confirm Delete ── */
-  .post-row-confirm {
+  .article-row-confirm {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -367,7 +367,7 @@ const styles = `
     border-radius: var(--radius);
   }
 
-  .post-row-confirm > span {
+  .article-row-confirm > span {
     font-size: 0.82rem;
     font-weight: 500;
     color: var(--ink);
@@ -623,14 +623,14 @@ const styles = `
     .profile-stats { justify-content: center; }
     .profile-header-actions { width: 100%; }
     .btn-write { width: 100%; justify-content: center; }
-    .post-row { grid-template-columns: 1fr; }
-    .post-row-thumb, .post-row-thumb-placeholder { display: none; }
-    .post-card { padding: 18px; }
+    .article-row { grid-template-columns: 1fr; }
+    .article-row-thumb, .article-row-thumb-placeholder { display: none; }
+    .article-card { padding: 18px; }
   }
 `;
 
 /* ── Helpers ── */
-const getId = (post) => post._id ?? post.id;
+const getId = (article) => article._id ?? article.id;
 
 const readTime = (content) => {
   const words = content?.trim().split(/\s+/).length ?? 0;
@@ -652,62 +652,62 @@ const stripHtml = (html) => {
   return el.textContent || el.innerText || "";
 };
 
-/* ── Post Row ── */
-function PostRow({ post, onDelete, deletingId }) {
+/* ── Article Row ── */
+function ArticleRow({ article, onDelete, deletingId }) {
   const [confirming, setConfirming] = useState(false);
-  const postId = getId(post);
-  const isDeleting = deletingId === postId;
+  const articleId = getId(article);
+  const isDeleting = deletingId === articleId;
 
   return (
-    <article className={`post-card${isDeleting ? " deleting" : ""}`}>
-      <div className="post-row">
-        <div className="post-row-body">
-          <div className="post-row-top">
-            <span className="post-row-author">{post.author}</span>
-            {post.createdAt && (
+    <article className={`article-card${isDeleting ? " deleting" : ""}`}>
+      <div className="article-row">
+        <div className="article-row-body">
+          <div className="article-row-top">
+            <span className="article-row-author">{article.author}</span>
+            {article.createdAt && (
               <>
-                <span className="post-row-dot" />
-                <span className="post-row-date">{formatDate(post.createdAt)}</span>
+                <span className="article-row-dot" />
+                <span className="article-row-date">{formatDate(article.createdAt)}</span>
               </>
             )}
-            {post.content && (
+            {article.content && (
               <>
-                <span className="post-row-dot" />
-                <span className="post-row-read-time">
+                <span className="article-row-dot" />
+                <span className="article-row-read-time">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
                   </svg>
-                  {readTime(post.content)}
+                  {readTime(article.content)}
                 </span>
               </>
             )}
           </div>
 
-          <Link to={`/post/${postId}`} className="post-row-title-link">
-            <h2 className="post-row-title">{post.title}</h2>
+          <Link to={`/article/${articleId}`} className="article-row-title-link">
+            <h2 className="article-row-title">{article.title}</h2>
           </Link>
 
-          <p className="post-row-excerpt">{stripHtml(post.content)}</p>
+          <p className="article-row-excerpt">{stripHtml(article.content)}</p>
 
-          {post.tags?.length > 0 && (
-            <div className="post-row-footer">
-              {post.tags.slice(0, 3).map((tag) => (
-                <span key={tag} className="post-row-tag">{tag}</span>
+          {article.tags?.length > 0 && (
+            <div className="article-row-footer">
+              {article.tags.slice(0, 3).map((tag) => (
+                <span key={tag} className="article-row-tag">{tag}</span>
               ))}
             </div>
           )}
 
           {!confirming ? (
-            <div className="post-row-actions">
-              <Link to={`/edit/${postId}`} className="post-row-edit">
+            <div className="article-row-actions">
+              <Link to={`/edit/${articleId}`} className="article-row-edit">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                 </svg>
                 Edit
               </Link>
-              <button className="post-row-delete" onClick={() => setConfirming(true)}>
+              <button className="article-row-delete" onClick={() => setConfirming(true)}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="3 6 5 6 21 6" />
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -716,18 +716,18 @@ function PostRow({ post, onDelete, deletingId }) {
               </button>
             </div>
           ) : (
-            <div className="post-row-confirm">
-              <span>Delete this post?</span>
+            <div className="article-row-confirm">
+              <span>Delete this article?</span>
               <button className="confirm-no" onClick={() => setConfirming(false)}>Cancel</button>
-              <button className="confirm-yes" onClick={() => { setConfirming(false); onDelete(postId); }}>Delete</button>
+              <button className="confirm-yes" onClick={() => { setConfirming(false); onDelete(articleId); }}>Delete</button>
             </div>
           )}
         </div>
 
-        {post.coverImage ? (
-          <img src={post.coverImage} alt="" className="post-row-thumb" />
+        {article.coverImage ? (
+          <img src={article.coverImage} alt="" className="article-row-thumb" />
         ) : (
-          <div className="post-row-thumb-placeholder">
+          <div className="article-row-thumb-placeholder">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2" />
               <circle cx="8.5" cy="8.5" r="1.5" />
@@ -775,7 +775,7 @@ function ProfileSkeleton() {
 /* ── Main Profile Component ── */
 function Profile() {
   const [profile, setProfile] = useState(null);
-  const [posts, setPosts] = useState([]);
+  const [articles, setarticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
@@ -801,17 +801,17 @@ function Profile() {
     }
   }, [currentUser, navigate]);
 
-  const loadPosts = useCallback(async (page = 0) => {
+  const loadarticles = useCallback(async (page = 0) => {
     if (!currentUser) return;
     try {
       setError(null);
-      const { data } = await API.get(`/users/${currentUser}/posts?page=${page}&size=${PAGE_SIZE}`);
-      setPosts(data.content || []);
+      const { data } = await API.get(`/users/${currentUser}/articles?page=${page}&size=${PAGE_SIZE}`);
+      setarticles(data.content || []);
       setTotalPages(data.totalPages || 0);
       setCurrentPage(data.number || 0);
     } catch (err) {
-      console.error("Failed to load posts:", err);
-      setError(err.response?.data?.message || err.response?.data || "Failed to load posts");
+      console.error("Failed to load articles:", err);
+      setError(err.response?.data?.message || err.response?.data || "Failed to load articles");
     }
   }, [currentUser]);
 
@@ -819,31 +819,31 @@ function Profile() {
     (async () => {
       setLoading(true);
       await loadProfile();
-      await loadPosts(0);
+      await loadarticles(0);
       setLoading(false);
     })();
-  }, [loadProfile, loadPosts]);
+  }, [loadProfile, loadarticles]);
 
   const goToPage = (page) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-    loadPosts(page);
+    loadarticles(page);
   };
 
-  const deletePost = useCallback(async (id) => {
+  const deleteArticle = useCallback(async (id) => {
     if (deletingId) return;
     setDeletingId(id);
     try {
-      await deletePostById(id);
-      setPosts((prev) => prev.filter((p) => getId(p) !== id));
+      await deleteArticleById(id);
+      setarticles((prev) => prev.filter((p) => getId(p) !== id));
       if (profile) {
         setProfile((prev) => ({
           ...prev,
-          postsCount: Math.max(0, (prev.postsCount || 1) - 1),
+          articlesCount: Math.max(0, (prev.articlesCount || 1) - 1),
         }));
       }
     } catch (err) {
-      console.error("Failed to delete post:", err);
-      setError("Failed to delete post. Please try again.");
+      console.error("Failed to delete article:", err);
+      setError("Failed to delete article. Please try again.");
     } finally {
       setDeletingId(null);
     }
@@ -885,7 +885,7 @@ function Profile() {
             <span className="error-text">
               {typeof error === "string" ? error : "Something went wrong."}
             </span>
-            <button className="error-retry" onClick={() => { setError(null); loadProfile(); loadPosts(currentPage); }}>
+            <button className="error-retry" onClick={() => { setError(null); loadProfile(); loadarticles(currentPage); }}>
               Retry
             </button>
           </div>
@@ -901,9 +901,9 @@ function Profile() {
               <h1 className="profile-name">{profile?.username || "User"}</h1>
               <p className="profile-handle">@{(profile?.username || "user").toLowerCase()}</p>
               <div className="profile-stats">
-                <span className="profile-stat-value">{profile?.postsCount ?? posts.length}</span>
+                <span className="profile-stat-value">{profile?.articlesCount ?? articles.length}</span>
                 <span className="profile-stat-label">
-                  {(profile?.postsCount ?? posts.length) === 1 ? "story" : "stories"}
+                  {(profile?.articlesCount ?? articles.length) === 1 ? "story" : "stories"}
                 </span>
               </div>
             </div>
@@ -923,11 +923,11 @@ function Profile() {
         <div className="profile-section-header">
           <h2 className="profile-section-title">Your Stories</h2>
           <span className="profile-section-count">
-            {posts.length} {posts.length === 1 ? "post" : "posts"}
+            {articles.length} {articles.length === 1 ? "article" : "articles"}
           </span>
         </div>
 
-        {posts.length === 0 ? (
+        {articles.length === 0 ? (
           <div className="empty-state">
             <div className="empty-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -941,12 +941,12 @@ function Profile() {
           </div>
         ) : (
           <>
-            <div className="profile-posts-list">
-              {posts.map((post) => (
-                <PostRow
-                  key={getId(post)}
-                  post={post}
-                  onDelete={deletePost}
+            <div className="profile-articles-list">
+              {articles.map((article) => (
+                <ArticleRow
+                  key={getId(article)}
+                  article={article}
+                  onDelete={deleteArticle}
                   deletingId={deletingId}
                 />
               ))}

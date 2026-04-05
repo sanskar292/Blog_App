@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createNewPoem } from "../api";
-import TiptapEditor from "../components/TiptapEditor";
+import { createNewPoem } from "../../api";
+import TiptapEditor from "../../components/TiptapEditor";
 import "./CreatePoetry.css";
 
 const MAX_TAGS = 5;

@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Outfit:wght@300;400;600&display=swap');
+
+:root {
+  --pc-bg: #ffffff;
+  --pc-text: #2d2d2d;
+  --pc-muted: #777;
+  --pc-accent: #ff6b6b;
+  --pc-border: rgba(0,0,0,0.05);
+  --pc-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  --font-title: 'Cormorant Garamond', serif;
+  --font-meta: 'Outfit', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --pc-bg: #1a1a1a;
+    --pc-text: #eee;
+    --pc-muted: #999;
+    --pc-accent: #ffa0a0;
+    --pc-border: rgba(255,255,255,0.05);
+    --pc-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  }
+}
+
+.poetry-card {
+  background: var(--pc-bg);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 240px; /* Professional fixed size for reels */
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--pc-shadow);
+  border: 1px solid var(--pc-border);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+  animation: float 6s ease-in-out infinite;
+  position: relative;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotateY(var(--tilt, 0)); }
+  50% { transform: translateY(-5px) rotateY(var(--tilt, 0)); }
+}
+
+.poetry-card:hover {
+  transform: scale(1.05) translateY(-8px) !important;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+  z-index: 10;
+}
+
+/* Thumbnail Layout */
+.poetry-card-thumb {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.poetry-card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.poetry-card:hover .poetry-card-thumb img {
+  transform: scale(1.1);
+}
+
+.poetry-card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  color: white;
+}
+
+.poetry-card-overlay .poetry-card-title {
+  color: white;
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+/* Title-only Layout */
+.poetry-card-title-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(255,107,107,0.03), rgba(107,107,255,0.03));
+}
+
+.poetry-card-title {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+  color: var(--pc-text);
+}
+
+.poetry-card-author {
+  font-family: var(--font-meta);
+  font-size: 0.75rem;
+  color: var(--pc-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.poetry-card-footer {
+  padding: 1rem 1.5rem;
+  background: rgba(128,128,128,0.03);
+  display: flex;
+  justify-content: center;
+}
+
+.poetry-card-mood {
+  font-family: var(--font-meta);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--pc-accent);
+  font-weight: 600;
+}
+
+.poetry-card-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 5;
+}
+
+.poetry-card:hover .poetry-card-actions {
+  opacity: 1;
+}
+
+.poetry-action-btn {
+  background: rgba(255,255,255,0.9);
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #333;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+
+.poetry-action-btn:hover {
+  transform: scale(1.1);
+  background: var(--pc-accent);
+  color: white;
+}
+
+.poetry-card.deleting {
+  opacity: 0.5;
+  filter: grayscale(1);
+}
+
+@media (max-width: 600px) {
+  .poetry-card {
+    height: 200px;
+  }
+}

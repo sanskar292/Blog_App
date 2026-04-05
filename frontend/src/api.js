@@ -28,20 +28,21 @@ API.interceptors.response.use(
 export const registerUser = (data) => API.post("/auth/register", data);
 export const loginUser    = (data) => API.post("/auth/login", data);
 
-// POSTS — page and size match Spring's Pageable defaults
-export const fetchPosts      = (page = 0, size = 5) => API.get(`/posts?page=${page}&size=${size}`);
-export const fetchPostById   = (id)                  => API.get(`/posts/${id}`);
-export const createNewPost   = (data)                => API.post("/posts", data);
-export const updatePostById  = (id, data)            => API.put(`/posts/${id}`, data);
-export const deletePostById  = (id)                  => API.delete(`/posts/${id}`);
+// ARTICLES (formerly Posts)
+export const fetchArticles      = (page = 0, size = 5) => API.get(`/articles?page=${page}&size=${size}`);
+export const fetchArticleById   = (id)                  => API.get(`/articles/${id}`);
+export const searchArticles     = (query, page = 0, size = 5) => API.get(`/articles/search?q=${query}&page=${page}&size=${size}`);
+export const createNewArticle   = (data)                => API.post("/articles", data);
+export const updateArticleById  = (id, data)            => API.put(`/articles/edit/${id}`, data);
+export const deleteArticleById  = (id)                  => API.delete(`/articles/${id}`);
 
 // COMMENTS
-export const fetchComments = (postId)          => API.get(`/comments/${postId}`);
-export const createComment = (postId, content) => API.post(`/comments/${postId}`, { content });
+export const fetchComments = (articleId) => API.get(`/comments/${articleId}`);
+export const createComment = (articleId, content) => API.post(`/comments/${articleId}`, { content });
 
 // USERS
 export const fetchUserProfile = () => API.get("/users/profile");
-export const fetchUserPosts = (username, page = 0, size = 5) => API.get(`/users/${username}/posts?page=${page}&size=${size}`);
+export const fetchUserArticles = (username, page = 0, size = 5) => API.get(`/users/${username}/posts?page=${page}&size=${size}`);
 
 // POETRY
 export const fetchPoems = (page = 0, size = 6) => API.get(`/poetry?page=${page}&size=${size}`);
@@ -56,6 +57,11 @@ export const fetchPoetryComments = (poetryId) => API.get(`/poetry-comments/${poe
 export const createPoetryComment = (poetryId, content) => API.post(`/poetry-comments/${poetryId}`, content, {
   headers: { "Content-Type": "application/json" }
 });
+
+// STORIES
+export const fetchStories = (page = 0, size = 10) => API.get(`/stories?page=${page}&size=${size}`);
+export const fetchStoryById = (id) => API.get(`/stories/${id}`);
+export const createStory = (data) => API.post("/stories", data);
 
 // Decode JWT to get logged-in username
 export const getLoggedInUser = () => {

@@ -246,7 +246,7 @@ function Register() {
     try {
       await registerUser({ username: form.username, password: form.password });
       setSuccess(true);
-      setTimeout(() => navigate("/login"), 1500);
+      setTimeout(() => navigate("/home"), 1500);
     } catch (err) {
       const status = err?.response?.status;
       if (status === 400) {
@@ -286,7 +286,7 @@ function Register() {
                 stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Account created! Redirecting to login…
+              Account created! Taking you home…
             </div>
           )}
 

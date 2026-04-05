@@ -12,8 +12,118 @@
   border-color: var(--border-focus);
 }
 
-/* Poetry Theme */
-.poetry-theme .tiptap-editor-wrapper {
+/* Article Theme Styles - Minimalist Medium-like */
+.article-theme.tiptap-editor-wrapper {
+  border: none;
+  background: #ffffff;
+  overflow: visible; /* Fix sticky behavior */
+}
+
+/* Link Bubble Styles */
+.tiptap-link-bubble {
+  display: flex;
+  align-items: center;
+  background: #191919;
+  padding: 6px 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  gap: 8px;
+}
+
+.tiptap-link-bubble input {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  outline: none;
+  width: 200px;
+}
+
+.tiptap-link-bubble input::placeholder {
+  color: #757575;
+}
+
+.tiptap-link-bubble button {
+  background: #1a8917;
+  border: none;
+  color: #ffffff;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.tiptap-link-bubble button:hover {
+  opacity: 0.9;
+}
+
+.article-theme .tiptap-toolbar {
+  position: sticky;
+  top: 40px; /* Clears the 64px navbar with a 8px gap */
+  z-index: 50;
+  background: #ffffff;
+  border: none;
+  border-bottom: 1px solid #f2f2f2;
+  padding: 12px 0;
+  margin-bottom: 20px;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.article-theme .tiptap-toolbar button {
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+}
+
+.article-theme .tiptap-toolbar button:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.05);
+  color: #191919;
+}
+
+.article-theme .tiptap-toolbar button.is-active {
+  background: rgba(26, 137, 23, 0.1);
+  color: #1a8917;
+}
+
+.article-theme .tiptap-editor-content {
+  background: #ffffff;
+  padding: 0;
+  font-family: 'Lora', serif;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: #292929;
+  min-height: 150px; /* Reduced from 500px to prevent unnecessary scrolling */
+  max-width: 740px; /* ~70-80 characters per line */
+  margin: 0 auto;
+  text-align: left !important;
+}
+
+.article-theme .tiptap-editor-content * {
+  text-align: left !important;
+}
+
+.article-theme .tiptap-editor-content h1 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 2rem;
+  margin: 1.5em 0 0.5em;
+}
+
+.article-theme .tiptap-editor-content h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin: 1.2em 0 0.4em;
+}
+
+/* Poetry Theme Styles */
+.poetry-theme.tiptap-editor-wrapper {
   border-color: var(--poetry-border);
   background: var(--poetry-surface);
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createNewPost } from "../api";
+import { createNewArticle } from "../api";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
@@ -16,13 +16,13 @@ const styles = `
     --success: #3a7d44;
   }
 
-  .post-form {
+  .article-form {
     display: flex;
     flex-direction: column;
     gap: 0;
   }
 
-  .post-form-heading {
+  .article-form-heading {
     font-family: 'Instrument Serif', serif;
     font-size: 1.1rem;
     font-weight: 400;
@@ -31,20 +31,20 @@ const styles = `
     margin-bottom: 20px;
   }
 
-  .post-form-heading em {
+  .article-form-heading em {
     font-style: italic;
     color: var(--accent);
   }
 
   /* Field */
-  .post-form-field {
+  .article-form-field {
     display: flex;
     flex-direction: column;
     gap: 5px;
     margin-bottom: 14px;
   }
 
-  .post-form-label {
+  .article-form-label {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.7rem;
     font-weight: 500;
@@ -54,12 +54,12 @@ const styles = `
     transition: color 0.15s;
   }
 
-  .post-form-field:focus-within .post-form-label {
+  .article-form-field:focus-within .article-form-label {
     color: var(--ink);
   }
 
-  .post-form-input,
-  .post-form-textarea {
+  .article-form-input,
+  .article-form-textarea {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.9rem;
     font-weight: 300;
@@ -74,30 +74,30 @@ const styles = `
     resize: none;
   }
 
-  .post-form-input::placeholder,
-  .post-form-textarea::placeholder {
+  .article-form-input::placeholder,
+  .article-form-textarea::placeholder {
     color: #c2bdb4;
     font-weight: 300;
   }
 
-  .post-form-input:focus,
-  .post-form-textarea:focus {
+  .article-form-input:focus,
+  .article-form-textarea:focus {
     border-color: var(--border-focus);
     box-shadow: 0 0 0 3px rgba(168,164,154,0.15);
   }
 
-  .post-form-input.has-error,
-  .post-form-textarea.has-error {
+  .article-form-input.has-error,
+  .article-form-textarea.has-error {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(200,80,42,0.1);
   }
 
-  .post-form-textarea {
+  .article-form-textarea {
     min-height: 100px;
     line-height: 1.65;
   }
 
-  .post-form-error {
+  .article-form-error {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.75rem;
     color: var(--accent);
@@ -105,31 +105,31 @@ const styles = `
   }
 
   /* Char counter */
-  .post-form-meta {
+  .article-form-meta {
     display: flex;
     justify-content: flex-end;
     margin-top: -10px;
     margin-bottom: 14px;
   }
 
-  .post-form-chars {
+  .article-form-chars {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.72rem;
     color: var(--muted);
     font-weight: 400;
   }
 
-  .post-form-chars.near-limit { color: var(--accent); }
+  .article-form-chars.near-limit { color: var(--accent); }
 
   /* Footer row */
-  .post-form-footer {
+  .article-form-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-top: 6px;
   }
 
-  .post-form-hint {
+  .article-form-hint {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.75rem;
     color: var(--muted);
@@ -137,7 +137,7 @@ const styles = `
   }
 
   /* Submit button */
-  .post-form-submit {
+  .article-form-submit {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.78rem;
     font-weight: 500;
@@ -157,17 +157,17 @@ const styles = `
     overflow: hidden;
   }
 
-  .post-form-submit:hover:not(:disabled) {
+  .article-form-submit:hover:not(:disabled) {
     background: #2e2e2b;
   }
 
-  .post-form-submit:disabled {
+  .article-form-submit:disabled {
     opacity: 0.45;
     cursor: not-allowed;
   }
 
   /* Spinner */
-  .post-form-spinner {
+  .article-form-spinner {
     width: 13px;
     height: 13px;
     border: 2px solid rgba(245,242,235,0.35);
@@ -181,7 +181,7 @@ const styles = `
   }
 
   /* Success flash */
-  .post-form-success {
+  .article-form-success {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -198,7 +198,7 @@ const styles = `
   }
 
   /* API error banner */
-  .post-form-api-error {
+  .article-form-api-error {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -228,7 +228,7 @@ function validate(form) {
   return errors;
 }
 
-function PostForm({ refresh }) {
+function ArticleForm({ refresh }) {
   const [form,       setForm]       = useState({ title: "", content: "" });
   const [errors,     setErrors]     = useState({});
   const [touched,    setTouched]    = useState({});
@@ -262,7 +262,7 @@ function PostForm({ refresh }) {
     setApiError(null);
 
     try {
-      await createNewPost(form);
+      await createNewArticle(form);
       setForm({ title: "", content: "" });
       setTouched({});
       setErrors({});
@@ -283,13 +283,13 @@ function PostForm({ refresh }) {
     <>
       <style>{styles}</style>
 
-      <div className="post-form">
-        <h2 className="post-form-heading">
+      <div className="article-form">
+        <h2 className="article-form-heading">
           New <em>entry</em>
         </h2>
 
         {apiError && (
-          <div className="post-form-api-error" role="alert">
+          <div className="article-form-api-error" role="alert">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <circle cx="12" cy="12" r="10"/>
@@ -301,11 +301,11 @@ function PostForm({ refresh }) {
         )}
 
         {/* Title */}
-        <div className="post-form-field">
-          <label className="post-form-label" htmlFor="pf-title">Title</label>
+        <div className="article-form-field">
+          <label className="article-form-label" htmlFor="pf-title">Title</label>
           <input
             id="pf-title"
-            className={`post-form-input${touched.title && errors.title ? " has-error" : ""}`}
+            className={`article-form-input${touched.title && errors.title ? " has-error" : ""}`}
             placeholder="Give it a name…"
             value={form.title}
             onChange={e => handleChange("title", e.target.value)}
@@ -314,16 +314,16 @@ function PostForm({ refresh }) {
             autoComplete="off"
           />
           {touched.title && errors.title && (
-            <span className="post-form-error" role="alert">{errors.title}</span>
+            <span className="article-form-error" role="alert">{errors.title}</span>
           )}
         </div>
 
         {/* Content */}
-        <div className="post-form-field">
-          <label className="post-form-label" htmlFor="pf-content">Content</label>
+        <div className="article-form-field">
+          <label className="article-form-label" htmlFor="pf-content">Content</label>
           <textarea
             id="pf-content"
-            className={`post-form-textarea${touched.content && errors.content ? " has-error" : ""}`}
+            className={`article-form-textarea${touched.content && errors.content ? " has-error" : ""}`}
             placeholder="What's on your mind…"
             value={form.content}
             onChange={e => handleChange("content", e.target.value)}
@@ -331,40 +331,40 @@ function PostForm({ refresh }) {
             maxLength={CONTENT_MAX + 50}
           />
           {touched.content && errors.content && (
-            <span className="post-form-error" role="alert">{errors.content}</span>
+            <span className="article-form-error" role="alert">{errors.content}</span>
           )}
         </div>
 
-        <div className="post-form-meta">
-          <span className={`post-form-chars${contentNearLimit ? " near-limit" : ""}`}>
+        <div className="article-form-meta">
+          <span className={`article-form-chars${contentNearLimit ? " near-limit" : ""}`}>
             {form.content.length} / {CONTENT_MAX}
           </span>
         </div>
 
-        <div className="post-form-footer">
+        <div className="article-form-footer">
           {success ? (
-            <span className="post-form-success">
+            <span className="article-form-success">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              Post published!
+              Article published!
             </span>
           ) : (
-            <span className="post-form-hint">
+            <span className="article-form-hint">
               {isBlank ? "Fill in both fields to publish." : "Ready to publish."}
             </span>
           )}
 
           <button
-            className="post-form-submit"
+            className="article-form-submit"
             onClick={handleSubmit}
             disabled={submitting}
             aria-busy={submitting}
           >
             {submitting ? (
               <>
-                <span className="post-form-spinner" />
+                <span className="article-form-spinner" />
                 Publishing…
               </>
             ) : (
@@ -377,4 +377,4 @@ function PostForm({ refresh }) {
   );
 }
 
-export default PostForm;
+export default ArticleForm;

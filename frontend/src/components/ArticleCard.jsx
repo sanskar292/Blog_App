@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { getLoggedInUser } from "../api";
+import { getThumbnail, handleImageError } from "../utils/imageUtils";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
@@ -17,20 +18,43 @@ const styles = `
     --radius: 4px;
   }
 
-  .post-card {
+  .article-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 24px 28px;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 12px;
     transition: box-shadow 0.2s ease, border-color 0.2s ease;
     position: relative;
     overflow: hidden;
   }
 
-  .post-card::before {
+  .article-card-thumb-wrapper {
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+  }
+
+  .article-card-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .article-card:hover .article-card-thumb {
+    transform: scale(1.05);
+  }
+
+  .article-card-content {
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .article-card::before {
     content: '';
     position: absolute;
     left: 0; top: 0; bottom: 0;
@@ -39,16 +63,17 @@ const styles = `
     transform: scaleY(0);
     transform-origin: bottom;
     transition: transform 0.25s ease;
+    z-index: 2;
   }
 
-  .post-card:hover {
+  .article-card:hover {
     box-shadow: 0 4px 16px rgba(0,0,0,0.07);
     border-color: #ccc9be;
   }
 
-  .post-card:hover::before { transform: scaleY(1); }
+  .article-card:hover::before { transform: scaleY(1); }
 
-  .post-card-title {
+  .article-card-title {
     font-family: 'Instrument Serif', serif;
     font-size: 1.2rem;
     font-weight: 400;
@@ -58,14 +83,14 @@ const styles = `
     margin: 0;
   }
 
-  .post-card-author {
+  .article-card-author {
     font-size: 0.72rem;
     font-weight: 400;
     color: var(--muted);
     letter-spacing: 0.04em;
   }
 
-  .post-card-excerpt {
+  .article-card-excerpt {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.875rem;
     font-weight: 300;
@@ -73,19 +98,19 @@ const styles = `
     line-height: 1.65;
     margin: 0;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
-  .post-card-actions {
+  .article-card-actions {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-top: 4px;
   }
 
-  .post-card-link {
+  .article-card-link {
     font-family: 'DM Sans', sans-serif;
     font-size: 0.78rem;
     font-weight: 500;
@@ -101,11 +126,11 @@ const styles = `
     transition: color 0.15s, border-color 0.15s;
   }
 
-  .post-card-link:hover { color: var(--accent); border-color: var(--accent); }
-  .post-card-link svg { transition: transform 0.2s ease; }
-  .post-card-link:hover svg { transform: translateX(3px); }
+  .article-card-link:hover { color: var(--accent); border-color: var(--accent); }
+  .article-card-link svg { transition: transform 0.2s ease; }
+  .article-card-link:hover svg { transform: translateX(3px); }
 
-  .post-card-delete {
+  .article-card-delete {
     background: none;
     border: none;
     cursor: pointer;
@@ -118,9 +143,9 @@ const styles = `
     transition: color 0.15s, background 0.15s;
   }
 
-  .post-card-delete:hover { color: var(--danger); background: var(--danger-bg); }
+  .article-card-delete:hover { color: var(--danger); background: var(--danger-bg); }
 
-  .post-card-confirm {
+  .article-card-confirm {
     position: absolute;
     inset: 0;
     background: var(--surface);
@@ -130,7 +155,7 @@ const styles = `
     justify-content: center;
     gap: 16px;
     animation: fadeIn 0.2s ease;
-    z-index: 1;
+    z-index: 10;
   }
 
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -177,64 +202,75 @@ const styles = `
   .confirm-no:hover { border-color: var(--ink); color: var(--ink); }
 `;
 
-function PostCard({ post, onDelete }) {
+function ArticleCard({ article, onDelete }) {
   const [confirming, setConfirming] = useState(false);
 
   const currentUser = getLoggedInUser();
-  const isOwner     = currentUser && currentUser === post.author;
-  const postId      = post._id ?? post.id;
+  const isOwner     = currentUser && currentUser === article.author;
+  const articleId      = article._id ?? article.id;
 
-  const excerpt = post.content.length > 100
-    ? post.content.substring(0, 100).trimEnd() + "…"
-    : post.content;
+  const excerpt = article.content.length > 100
+    ? article.content.substring(0, 100).trimEnd() + "…"
+    : article.content;
 
   return (
     <>
       <style>{styles}</style>
 
-      <article className="post-card">
-        <h2 className="post-card-title">{post.title}</h2>
-        {post.author && (
-          <span className="post-card-author">by {post.author}</span>
-        )}
-        <p className="post-card-excerpt">{excerpt}</p>
-
-        <div className="post-card-actions">
-          <Link to={`/post/${postId}`} className="post-card-link">
-            Read
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </Link>
-
-          {/* Only show delete to the post owner */}
-          {isOwner && (
-            <button
-              className="post-card-delete"
-              onClick={() => setConfirming(true)}
-              aria-label="Delete post"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                <path d="M10 11v6M14 11v6" />
-                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-              </svg>
-            </button>
+      <article className="article-card">
+        <div className="article-card-thumb-wrapper">
+          <img 
+            src={getThumbnail(article.coverImage, "article")} 
+            alt={article.title} 
+            className="article-card-thumb"
+            onError={(e) => handleImageError(e, "article")}
+          />
+        </div>
+        
+        <div className="article-card-content">
+          <h2 className="article-card-title">{article.title}</h2>
+          {article.author && (
+            <span className="article-card-author">by {article.author}</span>
           )}
+          <p className="article-card-excerpt">{excerpt}</p>
+
+          <div className="article-card-actions">
+            <Link to={`/article/${articleId}`} className="article-card-link">
+              Read
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </Link>
+
+            {/* Only show delete to the article owner */}
+            {isOwner && (
+              <button
+                className="article-card-delete"
+                onClick={() => setConfirming(true)}
+                aria-label="Delete article"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                  <path d="M10 11v6M14 11v6" />
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
 
         {confirming && isOwner && (
-          <div className="post-card-confirm" role="dialog" aria-label="Confirm deletion">
-            <span className="confirm-label">Delete this post?</span>
+          <div className="article-card-confirm" role="dialog" aria-label="Confirm deletion">
+            <span className="confirm-label">Delete this article?</span>
             <div className="confirm-actions">
               <button className="confirm-no" onClick={() => setConfirming(false)}>Cancel</button>
               <button
                 className="confirm-yes"
-                onClick={() => { setConfirming(false); onDelete(postId); }}
+                onClick={() => { setConfirming(false); onDelete(articleId); }}
               >
                 Delete
               </button>
@@ -246,4 +282,4 @@ function PostCard({ post, onDelete }) {
   );
 }
 
-export default PostCard;
+export default ArticleCard;

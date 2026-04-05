@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { fetchPoemById, updatePoemById, getLoggedInUser } from "../api";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { fetchPoemById, updatePoemById, getLoggedInUser } from "../../api";
 import DOMPurify from "dompurify";
-import TiptapEditor from "../components/TiptapEditor";
+import TiptapEditor from "../../components/TiptapEditor";
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap');
@@ -561,14 +561,14 @@ function PoetryDetails() {
       <style>{styles}</style>
 
       <div className="poetry-details-wrapper">
-        <a href="/poetry" className="poetry-details-back">
+        <Link to="/home" className="poetry-details-back">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="19" y1="12" x2="5" y2="12" />
             <polyline points="12 19 5 12 12 5" />
           </svg>
           Back to poems
-        </a>
+        </Link>
 
         {loadError && (
           <div className="poetry-details-error" role="alert">

@@ -1,12 +1,19 @@
+import { useState, useCallback } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
+import { BubbleMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
+import Underline from "@tiptap/extension-underline"
 import { TextStyle } from "@tiptap/extension-text-style";
 import { FontFamily } from "@tiptap/extension-font-family";
 import { TextAlign } from "@tiptap/extension-text-align";
+import Link from "@tiptap/extension-link";
 import "./TiptapEditor.css";
 
 const TiptapEditor = ({ value, onChange, placeholder = "Write your story…", theme = "blog" }) => {
+  const [linkUrl, setLinkUrl] = useState("");
+  const [showLinkInput, setShowLinkInput] = useState(false);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -30,27 +37,105 @@ const TiptapEditor = ({ value, onChange, placeholder = "Write your story…", th
       }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
-        alignments: ["left", "center", "right", "justify"],
+        alignments: theme === "article" ? ["left"] : ["left", "center", "right", "justify"],
+      }),
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          rel: "noopener noreferrer",
+          target: "_blank",
+        },
       }),
       Placeholder.configure({
         placeholder,
       }),
+      Underline,
     ],
     content: value || "",
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
+    onSelectionUpdate: ({ editor }) => {
+      if (editor.state.selection.empty && !editor.isActive("link")) {
+        setShowLinkInput(false);
+      }
+    },
     editorProps: {
       attributes: {
-        class: `tiptap-editor-content ${theme === "poetry" ? "poetry-theme" : ""}`,
+        class: `tiptap-editor-content ${theme}-theme`,
       },
     },
   });
 
+  if (!editor) {
+    return null;
+  }
+
+  const openLinkMenu = () => {
+    if (editor.state.selection.empty && !editor.isActive("link")) return;
+    const previousUrl = editor.getAttributes("link").href;
+    setLinkUrl(previousUrl || "");
+    setShowLinkInput(true);
+    editor.chain().focus().run();
+  };
+
+  const applyLink = () => {
+    if (linkUrl === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+    } else {
+      // Ensure the URL is global
+      let url = linkUrl;
+      // Check if it already has a protocol or starts with common prefixes
+      if (!/^(?:[a-z+]+:)?\/\//i.test(url) && 
+          !url.startsWith("/") && 
+          !url.startsWith("#") && 
+          !url.startsWith("mailto:") && 
+          !url.startsWith("tel:")) {
+        url = `https://${url}`;
+      }
+      editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+    }
+    setShowLinkInput(false);
+  };
+
+  const isArticle = theme === "article";
+
   return (
-    <div className="tiptap-editor-wrapper">
+    <div className={`tiptap-editor-wrapper ${theme}-theme`}>
+      {isArticle && (
+        <BubbleMenu 
+          editor={editor} 
+          tippyOptions={{ 
+            duration: 100, 
+            onHide: () => setShowLinkInput(false)
+          }}
+          shouldShow={() => showLinkInput}
+        >
+          <div className="tiptap-link-bubble">
+            <input
+              type="text"
+              placeholder="Paste or type a link..."
+              value={linkUrl}
+              onChange={(e) => setLinkUrl(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  applyLink();
+                }
+              }}
+              autoFocus
+            />
+            <button type="button" onClick={applyLink}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+          </div>
+        </BubbleMenu>
+      )}
+
       <div className="tiptap-toolbar">
+        {/* Formatting */}
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={editor.isActive("bold") ? "is-active" : ""}
           title="Bold"
@@ -61,6 +146,7 @@ const TiptapEditor = ({ value, onChange, placeholder = "Write your story…", th
           </svg>
         </button>
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={editor.isActive("italic") ? "is-active" : ""}
           title="Italic"
@@ -72,6 +158,7 @@ const TiptapEditor = ({ value, onChange, placeholder = "Write your story…", th
           </svg>
         </button>
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleStrike().run()}
           className={editor.isActive("strike") ? "is-active" : ""}
           title="Strikethrough"
@@ -83,6 +170,7 @@ const TiptapEditor = ({ value, onChange, placeholder = "Write your story…", th
           </svg>
         </button>
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={editor.isActive("underline") ? "is-active" : ""}
           title="Underline"
@@ -92,70 +180,100 @@ const TiptapEditor = ({ value, onChange, placeholder = "Write your story…", th
             <line x1="4" y1="21" x2="20" y2="21"/>
           </svg>
         </button>
+
+        {isArticle && (
+          <button
+            type="button"
+            onClick={openLinkMenu}
+            className={editor.isActive("link") ? "is-active" : ""}
+            title="Link"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+            </svg>
+          </button>
+        )}
+
+        {!isArticle && (
+          <>
+            <div className="toolbar-divider"></div>
+            <select
+              value={editor.getAttributes("textStyle").fontFamily || ""}
+              onChange={(e) => editor.chain().focus().setFontFamily(e.target.value).run()}
+              className="font-family-select"
+              title="Font Family"
+            >
+              <option value="">Default Font</option>
+              <option value="DM Sans">DM Sans</option>
+              <option value="Instrument Serif">Instrument Serif</option>
+              <option value="Montserrat">Montserrat</option>
+              <option value="Cormorant Garamond">Cormorant Garamond</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Arial">Arial</option>
+              <option value="Courier New">Courier New</option>
+            </select>
+          </>
+        )}
+
+        {!isArticle && (
+          <>
+            <div className="toolbar-divider"></div>
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().setTextAlign("left").run()}
+              className={editor.isActive({ textAlign: "left" }) ? "is-active" : ""}
+              title="Align Left"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="15" y2="12"/>
+                <line x1="3" y1="18" x2="18" y2="18"/>
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().setTextAlign("center").run()}
+              className={editor.isActive({ textAlign: "center" }) ? "is-active" : ""}
+              title="Align Center"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="6" y1="12" x2="18" y2="12"/>
+                <line x1="5" y1="18" x2="19" y2="18"/>
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().setTextAlign("right").run()}
+              className={editor.isActive({ textAlign: "right" }) ? "is-active" : ""}
+              title="Align Right"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="9" y1="12" x2="21" y2="12"/>
+                <line x1="6" y1="18" x2="21" y2="18"/>
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+              className={editor.isActive({ textAlign: "justify" }) ? "is-active" : ""}
+              title="Justify"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+            </button>
+          </>
+        )}
+
         <div className="toolbar-divider"></div>
-        <select
-          value={editor.getAttributes("textStyle").fontFamily || ""}
-          onChange={(e) => editor.chain().focus().setFontFamily(e.target.value).run()}
-          className="font-family-select"
-          title="Font Family"
-        >
-          <option value="">Default Font</option>
-          <option value="DM Sans">DM Sans</option>
-          <option value="Instrument Serif">Instrument Serif</option>
-          <option value="Montserrat">Montserrat</option>
-          <option value="Cormorant Garamond">Cormorant Garamond</option>
-          <option value="Georgia">Georgia</option>
-          <option value="Times New Roman">Times New Roman</option>
-          <option value="Arial">Arial</option>
-          <option value="Courier New">Courier New</option>
-        </select>
-        <div className="toolbar-divider"></div>
         <button
-          onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          className={editor.isActive({ textAlign: "left" }) ? "is-active" : ""}
-          title="Align Left"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="12" x2="15" y2="12"/>
-            <line x1="3" y1="18" x2="18" y2="18"/>
-          </svg>
-        </button>
-        <button
-          onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          className={editor.isActive({ textAlign: "center" }) ? "is-active" : ""}
-          title="Align Center"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="6" y1="12" x2="18" y2="12"/>
-            <line x1="5" y1="18" x2="19" y2="18"/>
-          </svg>
-        </button>
-        <button
-          onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          className={editor.isActive({ textAlign: "right" }) ? "is-active" : ""}
-          title="Align Right"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="9" y1="12" x2="21" y2="12"/>
-            <line x1="6" y1="18" x2="21" y2="18"/>
-          </svg>
-        </button>
-        <button
-          onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-          className={editor.isActive({ textAlign: "justify" }) ? "is-active" : ""}
-          title="Justify"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
-          </svg>
-        </button>
-        <div className="toolbar-divider"></div>
-        <button
+          type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           className={editor.isActive("heading", { level: 1 }) ? "is-active" : ""}
           title="Heading 1"
@@ -168,6 +286,7 @@ const TiptapEditor = ({ value, onChange, placeholder = "Write your story…", th
           </svg>
         </button>
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           className={editor.isActive("heading", { level: 2 }) ? "is-active" : ""}
           title="Heading 2"
@@ -181,6 +300,7 @@ const TiptapEditor = ({ value, onChange, placeholder = "Write your story…", th
         </button>
         <div className="toolbar-divider"></div>
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={editor.isActive("bulletList") ? "is-active" : ""}
           title="Bullet List"
@@ -195,6 +315,7 @@ const TiptapEditor = ({ value, onChange, placeholder = "Write your story…", th
           </svg>
         </button>
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={editor.isActive("orderedList") ? "is-active" : ""}
           title="Ordered List"
@@ -210,6 +331,7 @@ const TiptapEditor = ({ value, onChange, placeholder = "Write your story…", th
         </button>
         <div className="toolbar-divider"></div>
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={editor.isActive("blockquote") ? "is-active" : ""}
           title="Blockquote"
@@ -220,6 +342,7 @@ const TiptapEditor = ({ value, onChange, placeholder = "Write your story…", th
           </svg>
         </button>
         <button
+          type="button"
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
           className={editor.isActive("codeBlock") ? "is-active" : ""}
           title="Code Block"
@@ -231,6 +354,7 @@ const TiptapEditor = ({ value, onChange, placeholder = "Write your story…", th
         </button>
         <div className="toolbar-divider"></div>
         <button
+          type="button"
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
           title="Undo"
@@ -241,6 +365,7 @@ const TiptapEditor = ({ value, onChange, placeholder = "Write your story…", th
           </svg>
         </button>
         <button
+          type="button"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
           title="Redo"

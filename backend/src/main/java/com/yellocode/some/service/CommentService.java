@@ -1,9 +1,9 @@
 package com.yellocode.some.service;
 
 import com.yellocode.some.model.Comment;
-import com.yellocode.some.model.Post;
+import com.yellocode.some.model.Article;
 import com.yellocode.some.repository.CommentRepository;
-import com.yellocode.some.repository.PostRepository;
+import com.yellocode.some.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,20 +17,20 @@ public class CommentService {
     private CommentRepository commentRepository;
 
     @Autowired
-    private PostRepository postRepository;
+    private ArticleRepository articleRepository;
 
-    public Comment addComment(Long postId, Comment comment, String username) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+    public Comment addComment(Long articleId, Comment comment, String username) {
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new RuntimeException("Article not found"));
 
-        comment.setPost(post);
+        comment.setArticle(article);
         comment.setCreatedAt(LocalDateTime.now());
-        comment.setAuthor(username); // ← from JWT, no longer anonymous
+        comment.setAuthor(username); // from JWT, no longer anonymous
 
         return commentRepository.save(comment);
     }
 
-    public List<Comment> getCommentsByPost(Long postId) {
-        return commentRepository.findByPostId(postId);
+    public List<Comment> getCommentsByArticle(Long articleId) {
+        return commentRepository.findByArticleId(articleId);
     }
 }

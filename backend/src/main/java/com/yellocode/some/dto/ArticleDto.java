@@ -6,7 +6,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDto {
+public class ArticleDto {
     private String title;
     private String content;
     private String coverImage;

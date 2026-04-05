@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Versa | The Digital Curator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Work+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#fbf9f4",
+              "on-tertiary-fixed": "#002020",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed-variant": "#474746",
+              "on-error": "#ffffff",
+              "inverse-on-surface": "#f2f1ec",
+              "on-surface-variant": "#444748",
+              "inverse-primary": "#c8c6c5",
+              "surface-variant": "#e4e2dd",
+              "on-primary-fixed": "#1c1b1b",
+              "primary": "#000000",
+              "surface-dim": "#dbdad5",
+              "secondary-fixed-dim": "#e1c294",
+              "surface-container-lowest": "#ffffff",
+              "inverse-surface": "#30312e",
+              "surface": "#fbf9f4",
+              "surface-container": "#f0eee9",
+              "on-error-container": "#93000a",
+              "tertiary-fixed": "#c6e9e9",
+              "on-secondary-fixed-variant": "#584320",
+              "tertiary-fixed-dim": "#abcdcd",
+              "on-primary-container": "#858383",
+              "on-secondary-fixed": "#281900",
+              "primary-container": "#1c1b1b",
+              "outline-variant": "#c4c7c7",
+              "on-surface": "#1b1c19",
+              "surface-tint": "#5f5e5e",
+              "outline": "#747878",
+              "primary-fixed": "#e5e2e1",
+              "primary-fixed-dim": "#c8c6c5",
+              "on-background": "#1b1c19",
+              "surface-container-low": "#f5f3ee",
+              "on-tertiary-fixed-variant": "#2c4c4c",
+              "secondary-fixed": "#fedeae",
+              "secondary-container": "#fedeae",
+              "error": "#ba1a1a",
+              "surface-container-highest": "#e4e2dd",
+              "surface-container-high": "#eae8e3",
+              "tertiary": "#000000",
+              "background": "#fbf9f4",
+              "secondary": "#725b35",
+              "on-primary": "#ffffff",
+              "error-container": "#ffdad6",
+              "on-tertiary-container": "#698a8a",
+              "on-secondary": "#ffffff",
+              "tertiary-container": "#002020",
+              "on-secondary-container": "#78613a"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Work Sans"],
+              "label": ["Work Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .poetry-mask {
+            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-secondary/30">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#f5f3ee]/85 dark:bg-[#1c1b1b]/85 backdrop-blur-md transition-all duration-200">
+<div class="flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-serif tracking-tighter text-black dark:text-white font-['Noto_Serif'] antialiased">Versa</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-[#444748] dark:text-[#c4c7c7] font-['Noto_Serif'] antialiased hover:text-[#725b35] transition-colors duration-300" href="#">Poetry</a>
+<a class="text-[#444748] dark:text-[#c4c7c7] font-['Noto_Serif'] antialiased hover:text-[#725b35] transition-colors duration-300" href="#">Articles</a>
+<a class="text-[#444748] dark:text-[#c4c7c7] font-['Noto_Serif'] antialiased hover:text-[#725b35] transition-colors duration-300" href="#">Stories</a>
+</div>
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">search</button>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-lg text-sm font-medium hover:scale-95 duration-200 ease-in-out">Create</button>
+</div>
+</div>
+</nav>
+<div class="flex min-h-screen pt-20">
+<!-- SideNavBar -->
+<aside class="hidden lg:flex h-full w-64 fixed left-0 top-0 pt-20 flex-col gap-4 py-8 bg-[#fbf9f4] dark:bg-[#121212] font-['Work_Sans'] text-sm tracking-wide">
+<div class="px-8 mb-6">
+<h3 class="text-primary font-headline text-xl">Library</h3>
+<p class="text-on-surface-variant text-xs uppercase tracking-widest mt-1">Your Curation</p>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-4 px-8 py-3 text-black dark:text-white font-bold bg-[#e4e2dd] dark:bg-[#1c1b1b] rounded-r-full transition-all duration-400 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="rss_feed">rss_feed</span>
+<span>Personal Feed</span>
+</a>
+<a class="flex items-center gap-4 px-8 py-3 text-[#444748] dark:text-[#c4c7c7] hover:bg-[#f5f3ee] dark:hover:bg-[#1c1b1b] transition-all duration-400 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span>Saved Items</span>
+</a>
+<a class="flex items-center gap-4 px-8 py-3 text-[#444748] dark:text-[#c4c7c7] hover:bg-[#f5f3ee] dark:hover:bg-[#1c1b1b] transition-all duration-400 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 lg:ml-64 px-6 md:px-12 py-8">
+<!-- Filter Bar -->
+<div class="flex items-center justify-between mb-12 border-b border-outline-variant/15 pb-4">
+<div class="flex gap-8 overflow-x-auto no-scrollbar">
+<button class="text-primary font-semibold border-b-2 border-primary pb-4 -mb-[18px] whitespace-nowrap">All Curator Picks</button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors pb-4 whitespace-nowrap">Poetry</button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors pb-4 whitespace-nowrap">Articles</button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors pb-4 whitespace-nowrap">Stories</button>
+</div>
+<div class="hidden md:flex items-center gap-2 text-on-surface-variant text-xs uppercase tracking-widest">
+<span>Sort By:</span>
+<button class="flex items-center gap-1 font-semibold text-primary">Newest <span class="material-symbols-outlined text-sm">expand_more</span></button>
+</div>
+</div>
+<!-- Bento/Masonry Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-10">
+<!-- Featured Story (Full Width/Large) -->
+<div class="md:col-span-12 group cursor-pointer">
+<div class="relative h-[614px] overflow-hidden rounded-xl bg-primary-container">
+<img alt="Immersive landscape" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" data-alt="dramatic aerial view of a misty mountain range at dawn with deep shadows and soft blue and gold light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVrTNfCluS5gvgtkhYNs8JqGaSIc7XpXLD_ki2IJ0bfHaDO8QMp-AntcU3RakZBEbETRmX2ni3ncTExqNayc0Ov1udgYG56toY2i5-gXf2_Y4jN0fbkG4WcPHUT2a4DhQxCJd4MceCKYjJ20hq0q68e6evSsyUdJ_M0jIB2DgXj1Ru-5jZFkGsZa6RrvG0L4SvFLBwkrkSougl9xnSlD1XVUJSc-W9ha09PFtBsQ44SsHe_t58-o87kjrjGhspoCUCEIE_LroR7kc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-12 max-w-3xl">
+<span class="text-secondary font-label text-xs uppercase tracking-[0.3em] mb-4 block">Long Form Narrative</span>
+<h1 class="text-white font-headline text-5xl md:text-6xl mb-6 leading-tight -ml-1">The Silent Architecture of Memory</h1>
+<p class="text-white/80 font-body text-lg max-w-xl mb-8 leading-relaxed">An exploration into how the spaces we inhabit shape the ghosts we keep. A journey through forgotten corridors of the soul.</p>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden">
+<img alt="Author" data-alt="close up portrait of a middle aged woman with glasses and a thoughtful expression in soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi0PevyEVLH8D9Izo_aewKVT5ilDZUD4mSf3YAfHQ8AqeupRDPfWKZND6yLdUWEiEJ2pZPfDshC0vRSF2qOF3zcpOaNWGDX-stW044PkBj7F1NS3aweCzWnsvUwYVTh7Y7MJAkhLBBfrM7U2blOXToQTB_LKx3_kvP7uV-9EpzZtUeS7-DQKxH6vYXMbWyIUNCA3bwzolf77pX50AisJ0KF350I0Mbrdzp-COz3H7tMdKgFWAhR3IupjcmZWOZzM3j6LFSmtbjpB4"/>
+</div>
+<div class="text-white">
+<p class="text-sm font-medium">Elena Vance</p>
+<p class="text-xs text-white/60">12 min read</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Poetry Card (Asymmetric) -->
+<div class="md:col-span-5 bg-surface-container-low p-12 flex flex-col justify-center min-h-[500px] rounded-xl border border-outline-variant/5">
+<span class="text-secondary font-label text-xs uppercase tracking-widest mb-12 block">Poetry</span>
+<div class="font-headline text-2xl leading-loose text-on-surface italic poetry-mask">
+                        the weight of light<br/>
+                        upon the surface of the lake<br/>
+                        tells no secrets<br/>
+                        save for the way<br/>
+                        it breaks...
+                    </div>
+<div class="mt-12 pt-8 border-t border-outline-variant/10">
+<p class="text-on-surface font-headline italic">Fragments of Stillness</p>
+<p class="text-on-surface-variant text-sm font-body mt-1">Julian Thorne</p>
+</div>
+</div>
+<!-- Article Card -->
+<div class="md:col-span-7 group cursor-pointer">
+<div class="aspect-[16/10] overflow-hidden rounded-xl mb-6 bg-surface-container">
+<img alt="Interior design" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="modern minimalist interior with a single sculptural chair and a large window showing a soft grey sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDSTgocIpSYGipKU9_SeCidtoImm_tJfi6Sev4FcM8qFpnoLq-fR8Om61VhPxL6-_p8eegRkHqwTtDhFFGOVbwqlvHXoRLupuA_Fz6-mV_nbrypJZ13JSpmGHzF-YPlxBEg3eo-v9cx8XDtvqVIx2F1JvCbKIpEkOMFY_3J33MWPraLOLhl1nSveCrD5i4WzDv7IY8rLMEeCt-TOr6K4jRDNjm0G43s5txzJRyJArct4Z7BoARnqtuiDeKdCJMbh2__gQCjzhTnWM"/>
+</div>
+<div>
+<div class="flex items-center gap-3 mb-4">
+<span class="px-2 py-0.5 bg-surface-container-highest text-[10px] uppercase tracking-tighter text-on-surface-variant">Architecture</span>
+<span class="text-xs text-on-surface-variant">March 24, 2024</span>
+</div>
+<h2 class="font-headline text-3xl mb-4 group-hover:text-secondary transition-colors">Less as a Philosophy: The New Minimalist Manifesto</h2>
+<p class="text-on-surface-variant font-body leading-relaxed line-clamp-2">In an era of digital noise, the physical space returns to its roots as a sanctuary of absolute silence and intentionality.</p>
+<div class="mt-6 flex items-center justify-between">
+<p class="text-sm font-medium">By Marcus Aurel</p>
+<span class="material-symbols-outlined text-on-surface-variant">arrow_outward</span>
+</div>
+</div>
+</div>
+<!-- Grid Break / Quote -->
+<div class="md:col-span-12 py-20 text-center max-w-4xl mx-auto">
+<div class="w-1 h-12 bg-secondary/30 mx-auto mb-8"></div>
+<blockquote class="font-headline text-3xl italic text-on-surface-variant leading-relaxed">
+                        "Curated content is the antidote to the algorithm. We don't need more information; we need more meaning."
+                    </blockquote>
+<p class="mt-6 text-secondary font-label text-xs uppercase tracking-[0.4em]">Editorial Note</p>
+</div>
+<!-- Story Grid Items -->
+<div class="md:col-span-4 group cursor-pointer">
+<div class="aspect-square overflow-hidden rounded-xl mb-4 relative">
+<img alt="Story cover" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" data-alt="ethereal morning mist over a calm lake with pine trees reflecting perfectly in the mirror like water" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKc3zEkV_Rs2qMyFkiqqk7eMxp6Ru65PNtYoJb805aKwd48aDf8a8dV5XD1-7r6V0Gl8ZpKRgwGUOIQic4MUbFn4YPJX7rn2FgdHbQk_dmWtuayux2Q8LiVpemOAfhBtVPcvVOqlTW0afsf7kCXDNsiI2wTN39Lpuu-CFiAjkv0SDeigmBcwRs_fpttWzEtZiN9Y8iwp9lJ7r9cWInGhHjaPUw8Hz-mQFsDwrxlx9-HmwCA10CstSSvpr0QDOGM-nzpQLm9gtxaIo"/>
+<div class="absolute top-4 right-4 bg-white/20 backdrop-blur-md p-2 rounded-full text-white">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+</div>
+</div>
+<h3 class="font-headline text-xl mb-2">Wilderness and the Waiting</h3>
+<p class="text-on-surface-variant text-sm line-clamp-2">A photographic journal of six months spent in the isolation of the Northern Tundra.</p>
+</div>
+<div class="md:col-span-4 group cursor-pointer">
+<div class="aspect-square overflow-hidden rounded-xl mb-4 relative">
+<img alt="Library books" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" data-alt="close up of vintage leather bound book spines on a dark oak shelf in a dim library" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAH2ioeLSrG6A7H9rTH5Y9sP5iLxYOc0jb0ZTpIN0r_JYYWFAvPFaRMKhGJw7Zz9qh1Ajs4MijxVrmMNG45jPzLBLH2oUpOEd0vqlwn-WxZOwnOk3cnQKqFvBmjHKZMhPApnYtMc2tspl3CDr-BySXPSFCNhIm0skVFklkFFpy9eIgv2Llb9i0WDZtZkiVMPbVw2f8rSnj1e5NM_KHEu5uJbInpfHynMGbQ9p4h_-Fz5t5nEj3LyoQ6Sn_n1GruA03s9pXGGqMLEG4"/>
+<div class="absolute top-4 right-4 bg-white/20 backdrop-blur-md p-2 rounded-full text-white">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+</div>
+</div>
+<h3 class="font-headline text-xl mb-2">The Ink That Binds Us</h3>
+<p class="text-on-surface-variant text-sm line-clamp-2">Tracing the lineage of family through the margins of inherited books.</p>
+</div>
+<div class="md:col-span-4 group cursor-pointer">
+<div class="aspect-square overflow-hidden rounded-xl mb-4 relative">
+<img alt="Abstract art" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" data-alt="abstract flowing liquid gold texture with deep contrast and shimmering highlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKxISJXxrYF8SGR1FmWjmDB15NtAywoN82gnMAyi3YDJnckxsvu08fa0xVvfduluJWSAsJvmP6w6zUup6UlGdMqGql1SbC3s1u9M6vYgKO0ucMRbe-lmkRM81jp3VvePSzPGTWkdZb0SJhMAvxoRW7MMbcccvYu2gA8IZraQPaI1dOzZi0NLq5kvCQPerKYpmuj6Sr-zF1Qgkc4xRV_WeG8XxmztjErY78Ah09g__jCGQMw9OOb3GCtIJjpHqleII55jyWqeew_pM"/>
+<div class="absolute top-4 right-4 bg-white/20 backdrop-blur-md p-2 rounded-full text-white">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+</div>
+</div>
+<h3 class="font-headline text-xl mb-2">Alchemy of the Ordinary</h3>
+<p class="text-on-surface-variant text-sm line-clamp-2">Finding the sacred in the mundane ritual of morning coffee and morning light.</p>
+</div>
+</div>
+<!-- Pagination / Load More -->
+<div class="mt-24 flex flex-col items-center">
+<button class="group flex items-center gap-4 py-4 px-12 border border-outline rounded-full hover:bg-primary hover:text-on-primary transition-all duration-300">
+<span class="font-label text-xs uppercase tracking-widest">Discover Older Editions</span>
+<span class="material-symbols-outlined group-hover:translate-y-1 transition-transform">arrow_downward</span>
+</button>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="w-full py-12 px-8 bg-[#f5f3ee] dark:bg-[#121212] border-t border-[#c4c7c7]/15">
+<div class="flex flex-col md:flex-row justify-between items-center max-w-screen-2xl mx-auto">
+<div class="mb-8 md:mb-0">
+<div class="text-lg font-serif text-black dark:text-white mb-2">Versa</div>
+<p class="font-['Work_Sans'] text-xs uppercase tracking-widest text-[#444748] dark:text-[#c4c7c7]">© 2024 Versa Editorial. All rights reserved.</p>
+</div>
+<div class="flex gap-12">
+<a class="font-['Work_Sans'] text-xs uppercase tracking-widest text-[#444748] hover:text-black dark:hover:text-white transition-colors opacity-80 hover:opacity-100" href="#">About</a>
+<a class="font-['Work_Sans'] text-xs uppercase tracking-widest text-[#444748] hover:text-black dark:hover:text-white transition-colors opacity-80 hover:opacity-100" href="#">Terms</a>
+<a class="font-['Work_Sans'] text-xs uppercase tracking-widest text-[#444748] hover:text-black dark:hover:text-white transition-colors opacity-80 hover:opacity-100" href="#">Contact</a>
+</div>
+<div class="mt-8 md:mt-0 flex gap-6">
+<span class="material-symbols-outlined text-[#444748] cursor-pointer hover:text-secondary transition-colors">share</span>
+<span class="material-symbols-outlined text-[#444748] cursor-pointer hover:text-secondary transition-colors">mail</span>
+</div>
+</div>
+</footer>
+</body></html>

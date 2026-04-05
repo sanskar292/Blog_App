@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Versa | Editorial Sign In</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Work+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#fbf9f4",
+              "on-tertiary-fixed": "#002020",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed-variant": "#474746",
+              "on-error": "#ffffff",
+              "inverse-on-surface": "#f2f1ec",
+              "on-surface-variant": "#444748",
+              "inverse-primary": "#c8c6c5",
+              "surface-variant": "#e4e2dd",
+              "on-primary-fixed": "#1c1b1b",
+              "primary": "#000000",
+              "surface-dim": "#dbdad5",
+              "secondary-fixed-dim": "#e1c294",
+              "surface-container-lowest": "#ffffff",
+              "inverse-surface": "#30312e",
+              "surface": "#fbf9f4",
+              "surface-container": "#f0eee9",
+              "on-error-container": "#93000a",
+              "tertiary-fixed": "#c6e9e9",
+              "on-secondary-fixed-variant": "#584320",
+              "tertiary-fixed-dim": "#abcdcd",
+              "on-primary-container": "#858383",
+              "on-secondary-fixed": "#281900",
+              "primary-container": "#1c1b1b",
+              "outline-variant": "#c4c7c7",
+              "on-surface": "#1b1c19",
+              "surface-tint": "#5f5e5e",
+              "outline": "#747878",
+              "primary-fixed": "#e5e2e1",
+              "primary-fixed-dim": "#c8c6c5",
+              "on-background": "#1b1c19",
+              "surface-container-low": "#f5f3ee",
+              "on-tertiary-fixed-variant": "#2c4c4c",
+              "secondary-fixed": "#fedeae",
+              "secondary-container": "#fedeae",
+              "error": "#ba1a1a",
+              "surface-container-highest": "#e4e2dd",
+              "surface-container-high": "#eae8e3",
+              "tertiary": "#000000",
+              "background": "#fbf9f4",
+              "secondary": "#725b35",
+              "on-primary": "#ffffff",
+              "error-container": "#ffdad6",
+              "on-tertiary-container": "#698a8a",
+              "on-secondary": "#ffffff",
+              "tertiary-container": "#002020",
+              "on-secondary-container": "#78613a"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Work Sans"],
+              "label": ["Work Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-shadow {
+            box-shadow: 0 32px 64px -12px rgba(27, 28, 25, 0.05);
+        }
+        .glass-header {
+            background: rgba(245, 243, 238, 0.85);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex flex-col">
+<!-- Top Navigation (Simplified for Transactional Page) -->
+<nav class="fixed top-0 w-full z-50 glass-header">
+<div class="flex justify-between items-center px-8 py-6 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-headline tracking-tighter text-black">Versa</div>
+<div class="hidden md:block">
+<span class="text-label text-on-surface-variant text-xs uppercase tracking-widest">The Digital Curator</span>
+</div>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">
+<span class="material-symbols-outlined">close</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex items-center justify-center px-6 pt-24 pb-12">
+<div class="w-full max-w-5xl grid md:grid-cols-2 bg-surface-container-lowest editorial-shadow rounded-lg overflow-hidden border border-outline-variant/10">
+<!-- Visual Side (Intentional Asymmetry) -->
+<div class="hidden md:block relative overflow-hidden bg-primary-container">
+<img alt="Minimalist desk" class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-luminosity" data-alt="close-up of a minimalist workspace with a single lamp casting warm light on a blank notebook and a pen on a dark wood surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO-gIszm6qeEVMRTjKewePbFkdONvFw5QowwOUllZFL9NE5nNcQ3VAkavhQpZkfefZUL43MGE-HxlDH1xx2wK8TF2yl7xeOwwlxzY_d-LqAb2J7QLBiehB3RdVTbvB7u0CIbSWy_wQ2N2R-o6TAkkK2NYMdznubfzhCInE7G8kVhkAV-nPj5NEQuBbt-zoNxaPqEUZ7Zp6KE7BHS-J9IyCxMaz7dU1gWoWp7saWjz0Vz6MQOeD1Laftamk8bmaHCtk73470TtrFac"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-12 left-12 right-12 text-white">
+<h2 class="font-headline text-3xl mb-4 italic">"True curation is the art of knowing what to leave out."</h2>
+<p class="font-label text-xs uppercase tracking-[0.2em] opacity-60">Editorial Excellence Since 2024</p>
+</div>
+</div>
+<!-- Form Side -->
+<div class="p-8 md:p-16 flex flex-col justify-center">
+<div class="max-w-md mx-auto w-full">
+<header class="mb-10">
+<h1 class="font-headline text-4xl text-primary mb-2">Welcome back</h1>
+<p class="text-on-surface-variant text-sm">Enter your credentials to access your library.</p>
+</header>
+<!-- Primary Login Form -->
+<form class="space-y-6">
+<div>
+<label class="block text-xs uppercase tracking-widest font-label text-on-surface-variant mb-2" for="email">Email Address</label>
+<input class="w-full bg-surface-container-low border-none focus:ring-1 focus:ring-secondary/30 rounded-lg p-4 text-sm transition-all placeholder:text-outline" id="email" name="email" placeholder="name@editorial.com" type="email"/>
+</div>
+<div>
+<div class="flex justify-between mb-2">
+<label class="block text-xs uppercase tracking-widest font-label text-on-surface-variant" for="password">Password</label>
+<a class="text-[10px] uppercase tracking-widest text-secondary hover:text-primary transition-colors" href="#">Forgot?</a>
+</div>
+<input class="w-full bg-surface-container-low border-none focus:ring-1 focus:ring-secondary/30 rounded-lg p-4 text-sm transition-all placeholder:text-outline" id="password" name="password" placeholder="••••••••" type="password"/>
+</div>
+<button class="w-full bg-primary text-on-primary py-4 rounded-lg font-label text-xs uppercase tracking-[0.2em] hover:bg-primary/90 transition-all duration-300 transform active:scale-[0.98]" type="submit">
+                            Sign In
+                        </button>
+</form>
+<!-- Separator -->
+<div class="relative my-10">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-outline-variant/20"></div>
+</div>
+<div class="relative flex justify-center">
+<span class="bg-surface-container-lowest px-4 text-[10px] uppercase tracking-widest text-outline">Or continue with</span>
+</div>
+</div>
+<!-- Social Login -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-surface border border-outline-variant/30 hover:bg-surface-container-low transition-colors duration-200">
+<svg class="w-4 h-4" viewbox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="currentColor"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="currentColor"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="currentColor"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.66l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="currentColor"></path>
+</svg>
+<span class="text-xs font-label">Google</span>
+</button>
+<button class="flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-surface border border-outline-variant/30 hover:bg-surface-container-low transition-colors duration-200">
+<svg class="w-4 h-4" viewbox="0 0 24 24">
+<path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.08-.46-2.07-.48-3.2 0-1.44.62-2.2.45-3.06-.35C5.1 17.75 3.7 12.65 6.45 8.3c1.35-2.13 3.52-2.52 4.7-2.52 1.25.03 2.18.47 2.96.47.75 0 2.12-.58 3.58-.43 1.6.17 2.76.85 3.42 1.87-3.32 1.95-2.8 6.32.48 7.68-.7 1.8-1.63 3.6-3.54 4.91zM12.03 5.75c-.26-2.3 1.65-4.43 3.9-4.75.3 2.65-2.5 4.94-3.9 4.75z" fill="currentColor"></path>
+</svg>
+<span class="text-xs font-label">Apple</span>
+</button>
+</div>
+<footer class="mt-12 text-center">
+<p class="text-on-surface-variant text-xs">
+                            New to Versa? 
+                            <a class="text-secondary font-medium hover:underline ml-1" href="#">Create an account</a>
+</p>
+</footer>
+</div>
+</div>
+</div>
+</main>
+<!-- Success Feedback Area (Tonal Shift) -->
+<section class="bg-surface-container-low py-20 px-6">
+<div class="max-w-screen-xl mx-auto grid md:grid-cols-3 gap-12">
+<div class="space-y-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-sm">history_edu</span>
+</div>
+<h3 class="font-headline text-xl">Curated Feed</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Experience a hand-picked selection of poetry and articles tailored to your intellectual curiosity.</p>
+</div>
+<div class="space-y-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-sm">auto_stories</span>
+</div>
+<h3 class="font-headline text-xl">Deep Reading</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Our focus-first reading mode eliminates digital noise, allowing for true literary immersion.</p>
+</div>
+<div class="space-y-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-sm">ink_pen</span>
+</div>
+<h3 class="font-headline text-xl">Writer's Circle</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Join a community of modern thinkers and contributors dedicated to the craft of the written word.</p>
+</div>
+</div>
+</section>
+<!-- Footer Component -->
+<footer class="w-full py-12 px-8 bg-surface-container-low text-on-surface-variant font-label text-xs uppercase tracking-widest border-t border-outline-variant/15">
+<div class="flex flex-col md:flex-row justify-between items-center max-w-screen-2xl mx-auto gap-6">
+<div class="text-lg font-headline text-black normal-case tracking-tighter">Versa Editorial</div>
+<div class="flex gap-8">
+<a class="hover:text-black transition-colors" href="#">About</a>
+<a class="hover:text-black transition-colors" href="#">Terms</a>
+<a class="hover:text-black transition-colors" href="#">Contact</a>
+</div>
+<div class="opacity-80">© 2024 Versa Editorial. All rights reserved.</div>
+</div>
+</footer>
+</body></html>

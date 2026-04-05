@@ -203,7 +203,7 @@ function Login() {
     try {
       const { data } = await loginUser(form);
       localStorage.setItem("token", data.token);
-      navigate("/");
+      navigate("/home");
     } catch (err) {
       const status = err?.response?.status;
       if (status === 401) {

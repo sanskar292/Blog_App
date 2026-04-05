@@ -1,0 +1,257 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@400;500&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Root ── */
+
+.landing-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ── Nav ── */
+.landing-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 2.5rem;
+  border-bottom: 1px solid rgba(184, 162, 138, 0.25);
+  flex-shrink: 0;
+  /* subtle glassmorphism */
+  background: rgba(248, 244, 237, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 10;
+  position: relative;
+}
+
+.nav-logo {
+  font-family: 'Lora', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #2e2318;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-signin {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #7a624e;
+  font-family: 'DM Sans', sans-serif;
+  padding: 0.45rem 0.9rem;
+  border-radius: 4px;
+  transition: color 0.2s;
+}
+
+.btn-signin:hover {
+  color: #2e2318;
+}
+
+.btn-started {
+  background: #2e2318;
+  border: 1px solid #2e2318;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  color: #f8f4ed;
+  padding: 0.5rem 1.15rem;
+  border-radius: 4px;
+  letter-spacing: 0.03em;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-started:hover {
+  background: #1a120a;
+  border-color: #1a120a;
+}
+
+/* ── Hero ── */
+.hero {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background-image: url('https://images.unsplash.com/photo-1519219788971-8d9797e0928e?q=80&w=844&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center right;
+}
+
+/* Refined gradient — slightly wider cream band for readability */
+.hero-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right,
+      rgba(248, 244, 237, 0.98) 0%,
+      rgba(248, 244, 237, 0.92) 32%,
+      rgba(248, 244, 237, 0.40) 58%,
+      rgba(248, 244, 237, 0.00) 100%);
+}
+
+/* FIX: img tag removed from JSX — only the CSS background is used */
+.hero-bg {
+  display: none;
+}
+
+/* text content */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 4rem 2.5rem 4rem 3rem;
+  max-width: 480px;
+
+  /* Entrance animation */
+  animation: heroFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* kicker */
+.hero-kicker {
+  font-size: 0.68rem;
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #9e8570;
+  margin-bottom: 1rem;
+
+  animation: heroFadeUp 0.7s 0.05s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* heading */
+.hero-heading {
+  font-family: 'Lora', serif;
+  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  color: #1e160d;
+  text-transform: uppercase;
+  margin-bottom: 1.3rem;
+
+  animation: heroFadeUp 0.7s 0.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* FIX: removed <br /> from JSX — heading wraps naturally via max-width */
+
+/* sub */
+.hero-sub {
+  font-size: 0.95rem;
+  color: #5a4a38;
+  line-height: 1.75;
+  font-family: 'DM Sans', sans-serif;
+  margin-bottom: 2.2rem;
+  max-width: 360px;
+  /* FIX: controls line length without <br /> hacks */
+
+  animation: heroFadeUp 0.7s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* CTA row */
+.hero-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  animation: heroFadeUp 0.7s 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.btn-cta {
+  position: relative;
+  overflow: hidden;
+  background: #5f7f8a;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0.82rem 1.7rem;
+  border-radius: 3px;
+  box-shadow: 0 2px 12px rgba(95, 127, 138, 0.22);
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  z-index: 0;
+}
+
+/* Decorative image — fades in on hover */
+.btn-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1455390582262-044cdead277a?w=400&auto=format&fit=crop&q=70');
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transform: scale(1.12);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  z-index: -1;
+  border-radius: inherit;
+}
+
+.btn-cta:hover::before {
+  opacity: 0.38;
+  transform: scale(1);
+}
+
+.btn-cta:hover {
+  background: #4d6b75;
+  box-shadow: 0 6px 24px rgba(95, 127, 138, 0.38);
+  transform: translateY(-2px);
+}
+
+.btn-cta:active {
+  transform: translateY(0);
+}
+
+/* FIX: removed ghost "Sign in" from hero-cta-row — it duplicated the nav button */
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .landing-nav {
+    padding: 1rem 1.25rem;
+  }
+
+  .hero-content {
+    padding: 2.5rem 1.5rem;
+    max-width: 100%;
+  }
+
+  .hero-veil {
+    background: rgba(248, 244, 237, 0.88);
+    /* solid-ish on mobile, photo visible as texture */
+  }
+
+  .hero-heading {
+    font-size: clamp(2rem, 10vw, 2.8rem);
+  }
+}

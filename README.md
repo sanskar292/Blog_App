@@ -1,6 +1,6 @@
 # BlogApp
 
-A full-stack blog application built with Spring Boot and React. Users can register, log in, create posts, edit and delete their own posts, and comment on others.
+A full-stack blog application built with Spring Boot and React. Users can register, log in, create articles, edit and delete their own articles, and comment on others.
 
 ---
 
@@ -22,10 +22,10 @@ A full-stack blog application built with Spring Boot and React. Users can regist
 ## Features
 
 - JWT-based register and login
-- Create, read, edit, delete blog posts
-- Ownership enforcement — only the author can edit or delete their post
+- Create, read, edit, delete blog articles
+- Ownership enforcement — only the author can edit or delete their article
 - Comments with author attribution
-- Pagination on the post list
+- Pagination on the article list
 - Responsive navbar with auth state
 - Consistent design system across all pages
 
@@ -50,8 +50,8 @@ blogapp/
 └── frontend/                 # React + Vite project
     ├── src/
     │   ├── api.js            # Axios instance and API calls
-    │   ├── components/       # PostCard, PostForm, AppNavbar
-    │   └── pages/            # Home, PostDetails, Login, Register
+    │   ├── components/       # ArticleCard, ArticleForm, AppNavbar
+    │   └── pages/            # Home, ArticleDetails, Login, Register
     └── vite.config.js
 ```
 
@@ -123,20 +123,20 @@ blogapp/
 | POST | `/api/auth/register` | Register a new user |
 | POST | `/api/auth/login` | Login and receive JWT |
 
-### Posts
+### Articles
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/posts?page=0&size=5` | Get paginated posts |
-| GET | `/api/posts/{id}` | Get a single post |
-| POST | `/api/posts` | Create a post (auth required) |
-| PUT | `/api/posts/{id}` | Update a post (owner only) |
-| DELETE | `/api/posts/{id}` | Delete a post (owner only) |
+| GET | `/api/articles?page=0&size=5` | Get paginated articles |
+| GET | `/api/articles/{id}` | Get a single article |
+| POST | `/api/articles` | Create an article (auth required) |
+| PUT | `/api/articles/{id}` | Update an article (owner only) |
+| DELETE | `/api/articles/{id}` | Delete an article (owner only) |
 
 ### Comments
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/comments/{postId}` | Get comments for a post |
-| POST | `/api/comments/{postId}` | Add a comment (auth required) |
+| GET | `/api/comments/{articleId}` | Get comments for an article |
+| POST | `/api/comments/{articleId}` | Add a comment (auth required) |
 
 ---
 

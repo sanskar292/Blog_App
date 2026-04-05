@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Versa Story - The Silent Weaver</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Work+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline-variant": "#c4c7c7",
+              "primary": "#000000",
+              "surface-container": "#f0eee9",
+              "primary-fixed": "#e5e2e1",
+              "surface-container-high": "#eae8e3",
+              "surface-variant": "#e4e2dd",
+              "surface-container-lowest": "#ffffff",
+              "on-primary": "#ffffff",
+              "tertiary-fixed": "#c6e9e9",
+              "on-background": "#1b1c19",
+              "on-secondary-fixed": "#281900",
+              "secondary-fixed-dim": "#e1c294",
+              "primary-container": "#1c1b1b",
+              "on-secondary-fixed-variant": "#584320",
+              "on-tertiary-container": "#698a8a",
+              "surface-tint": "#5f5e5e",
+              "inverse-on-surface": "#f2f1ec",
+              "tertiary": "#000000",
+              "inverse-primary": "#c8c6c5",
+              "tertiary-container": "#002020",
+              "on-tertiary-fixed": "#002020",
+              "inverse-surface": "#30312e",
+              "on-primary-fixed-variant": "#474746",
+              "secondary-container": "#fedeae",
+              "secondary": "#725b35",
+              "on-primary-container": "#858383",
+              "on-tertiary-fixed-variant": "#2c4c4c",
+              "on-tertiary": "#ffffff",
+              "on-secondary-container": "#78613a",
+              "surface": "#fbf9f4",
+              "primary-fixed-dim": "#c8c6c5",
+              "on-surface-variant": "#444748",
+              "surface-container-highest": "#e4e2dd",
+              "tertiary-fixed-dim": "#abcdcd",
+              "surface-bright": "#fbf9f4",
+              "on-surface": "#1b1c19",
+              "error-container": "#ffdad6",
+              "error": "#ba1a1a",
+              "outline": "#747878",
+              "on-primary-fixed": "#1c1b1b",
+              "surface-dim": "#dbdad5",
+              "on-secondary": "#ffffff",
+              "on-error": "#ffffff",
+              "background": "#fbf9f4",
+              "on-error-container": "#93000a",
+              "surface-container-low": "#f5f3ee",
+              "secondary-fixed": "#fedeae"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Work Sans"],
+              "label": ["Work Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .reading-progress-bar {
+            width: 35%;
+            height: 2px;
+            background: #725b35;
+        }
+        .drop-cap::first-letter {
+            float: left;
+            font-family: 'Noto Serif';
+            font-size: 5rem;
+            line-height: 0.8;
+            padding-top: 0.5rem;
+            padding-right: 0.75rem;
+            color: #000000;
+        }
+        .story-gradient-overlay {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#f5f3ee]/85 dark:bg-[#1c1b1b]/85 backdrop-blur-md font-['Noto_Serif'] antialiased">
+<div class="flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-serif tracking-tighter text-black dark:text-white">Versa</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-[#444748] dark:text-[#c4c7c7] hover:text-[#725b35] transition-colors duration-300" href="#">Poetry</a>
+<a class="text-[#444748] dark:text-[#c4c7c7] hover:text-[#725b35] transition-colors duration-300" href="#">Articles</a>
+<a class="text-[#725b35] font-semibold border-b-2 border-[#725b35] pb-1 hover:text-[#725b35] transition-colors duration-300" href="#">Stories</a>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden sm:flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined">search</span>
+</div>
+<button class="bg-primary text-on-primary px-5 py-1.5 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">Create</button>
+</div>
+</div>
+<!-- Reading Progress (Contextual for Story) -->
+<div class="w-full bg-outline-variant/10 h-[2px]">
+<div class="reading-progress-bar"></div>
+</div>
+</nav>
+<!-- SideNavBar (Suppressed for focused story reading, replaced by floating interaction bar) -->
+<main class="relative">
+<!-- Full-Bleed Hero Section -->
+<section class="relative h-screen w-full overflow-hidden flex items-end">
+<div class="absolute inset-0 bg-primary">
+<img alt="Cinematic Hero" class="w-full h-full object-cover opacity-80" data-alt="atmospheric cinematic shot of a misty ancient forest at dawn with ethereal light rays piercing through tall cedar trees" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCX7sq18ExtJBltp9G4cSBxwkNoeXwX1e6ScpdCr0qao5yfMAxggqsH-bQ2ltrB6yzA-VI36VmLcfPBp2LO0qjXQjUA8qfIYNV4qJRXQenfHWHoXNTQUVek_24-3HJWtv3-sHIW8-hessoQnsnP-sbmuYWN9O0m2dVpZVmtj5tp7NUPiMG_i7E9xmkU1jgZOpv9f_W2PDhjjKWqJAqaGbijT2bN746MLSzl2_Eza1ecYiZO1gSQU5ruzKsYjNH8HEYR2oGEABuqkzE"/>
+<div class="absolute inset-0 story-gradient-overlay"></div>
+</div>
+<div class="relative w-full max-w-screen-xl mx-auto px-8 pb-24 md:pb-32">
+<div class="space-y-4 max-w-3xl">
+<div class="flex items-center gap-3 text-secondary-fixed uppercase tracking-[0.2em] text-xs font-semibold">
+<span class="w-8 h-[1px] bg-secondary-fixed"></span>
+                        A Featured Narrative
+                    </div>
+<h1 class="text-6xl md:text-8xl font-headline text-on-primary leading-tight tracking-tighter">
+                        The Silent <br/>Weaver
+                    </h1>
+<div class="flex items-center gap-4 pt-6">
+<div class="w-12 h-12 rounded-full overflow-hidden border border-on-primary/20">
+<img alt="Author" class="w-full h-full object-cover" data-alt="portrait of a thoughtful woman with soft lighting and minimalist background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCN4mixUK7kJns2xB3xUaSnVSvUwoZ_sVzR19IY94yZKhl8M8A3NTHq9JM2KmsFUtmPsdaPTQXKM2FPZLYJT0I4rh5InTesQj7d_NZPULd5i-PPgIRSZG25zEoTENe93IOlFz2U9V6ItpHXDfSlaz4I9x-_gyht0bs7AIBu6U2xbDlv3M0snWyZN5GCXNmBMku8OpynjuYsSvVqJCkPpvYx_fxDxikctkWBEuQBcyz5VIXqmj13hWISIyiMXkCoj1wyh3oTUoSSnys"/>
+</div>
+<div class="text-on-primary">
+<p class="text-label font-medium">Elena Thorne</p>
+<p class="text-xs opacity-70">12 Minute Read • Oct 2024</p>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute bottom-10 right-10 hidden lg:block">
+<div class="flex flex-col gap-4">
+<button class="w-12 h-12 rounded-full bg-surface-container-lowest/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-surface-container-lowest/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Narrative Content Area -->
+<article class="bg-surface pt-20 pb-32">
+<div class="max-w-screen-md mx-auto px-8">
+<!-- Introduction / Chapter 1 -->
+<div class="mb-20">
+<p class="drop-cap font-body text-xl leading-relaxed text-on-surface-variant italic mb-8">
+                        The valley did not speak in words, but in the slow shifting of shale and the rhythmic sighing of the ancient pines. High above, where the air grew thin and the shadows stretched long, lived the one they called the Weaver.
+                    </p>
+<p class="font-body text-lg leading-[1.8] text-on-surface mb-8">
+                        It was said that she could stitch the sunlight into the fabric of the morning mist, creating garments of such translucent beauty that those who wore them would forget the weight of their own grief. But such stories were for children, and Thomas was no longer a child. He climbed with the dogged persistence of a man who had lost everything but his curiosity.
+                    </p>
+<p class="font-body text-lg leading-[1.8] text-on-surface">
+                        The path was narrow, a mere ribbon of dust clinging to the mountainside. Every step sent a cascade of small stones tumbling into the abyss below. He didn't look down. He only looked forward, toward the small stone hut that sat like a jagged tooth against the skyline.
+                    </p>
+</div>
+<!-- Atmospheric Break / Immersive Image -->
+<div class="my-24 -mx-8 md:-mx-32 relative group">
+<div class="aspect-[21/9] overflow-hidden rounded-lg">
+<img alt="Mountain Landscape" class="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-1000" data-alt="wide cinematic shot of jagged snow-capped mountain peaks against a stormy purple and grey sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhHXh2dflknKZd09lpA_sz6-RgPYaIRAfGhHfW8TEoR6__5kdKlkzkJS47Ah9Qo24R3iAbsd80IwmvJetPzFqH9zUUCIxYuQIkI3Qy752SeU_s-We5X6HvpFr8ohNiXBN3IslKStd3Jg9lfty1MnE8v7o42wwQCtas9qlROXsWay3Pu53HtJ0sh7v32-J0YTUR2U5lgp2aBnGretXjsRNbXK2XGiDzJOhtT1XEL_iBVEDXvXHVcndlW7mZDIztQUpNe0L--d5SXs0"/>
+</div>
+<div class="absolute bottom-4 right-8 text-on-surface-variant/60 text-[10px] uppercase tracking-widest">
+                        The Ascent into the Grey
+                    </div>
+</div>
+<!-- Chapter 2 -->
+<div class="mb-20">
+<h2 class="font-headline text-3xl mb-10 text-primary">II. The Loom of Echoes</h2>
+<p class="font-body text-lg leading-[1.8] text-on-surface mb-8">
+                        When he finally reached the summit, the silence was absolute. It wasn't the absence of sound, but rather a presence—a heavy, expectant quiet that seemed to vibrate in his marrow. The door to the hut was open.
+                    </p>
+<!-- Pull Quote -->
+<div class="my-16 pl-8 border-l-2 border-secondary py-4 bg-secondary-container/5">
+<blockquote class="font-headline text-2xl italic text-on-secondary-container leading-relaxed">
+                            "We do not weave to hide the world, Thomas. We weave to see it clearly."
+                        </blockquote>
+<cite class="block mt-4 font-label text-sm text-secondary uppercase tracking-widest">— The Weaver</cite>
+</div>
+<p class="font-body text-lg leading-[1.8] text-on-surface">
+                        Inside, the room was filled with threads of impossible colors. Some seemed to glow with an internal fire, others were as dark as the space between stars. In the center sat the woman. She did not look up from her work, her fingers moving with a fluid, terrifying grace that defied her aged appearance.
+                    </p>
+</div>
+<!-- Tonal Shift Section (Comments/Engagement) -->
+<section class="mt-32 pt-20 border-t border-outline-variant/20">
+<div class="flex justify-between items-center mb-12">
+<h3 class="font-headline text-2xl">Reader Refections</h3>
+<button class="text-secondary font-label text-sm font-semibold hover:underline">Write a Response</button>
+</div>
+<div class="space-y-12">
+<!-- Comment 1 -->
+<div class="group">
+<div class="flex gap-4 items-start">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex-shrink-0"></div>
+<div>
+<div class="flex items-center gap-3 mb-2">
+<span class="font-label font-bold text-sm">Julian Vane</span>
+<span class="text-[10px] text-on-surface-variant/60 uppercase">2 hours ago</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed">The pacing here is exquisite. The description of the silence as a "presence" really resonated with the atmosphere of the climb.</p>
+<div class="mt-4 flex gap-4 text-xs text-on-surface-variant/40">
+<button class="flex items-center gap-1 hover:text-secondary"><span class="material-symbols-outlined text-sm">favorite</span> 24</button>
+<button class="hover:text-secondary">Reply</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Comment 2 -->
+<div class="group">
+<div class="flex gap-4 items-start">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex-shrink-0"></div>
+<div>
+<div class="flex items-center gap-3 mb-2">
+<span class="font-label font-bold text-sm">Sarah Miller</span>
+<span class="text-[10px] text-on-surface-variant/60 uppercase">5 hours ago</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed">Versa always picks the most immersive stories. Elena Thorne has a way with prose that feels like poetry.</p>
+<div class="mt-4 flex gap-4 text-xs text-on-surface-variant/40">
+<button class="flex items-center gap-1 hover:text-secondary"><span class="material-symbols-outlined text-sm">favorite</span> 12</button>
+<button class="hover:text-secondary">Reply</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</article>
+</main>
+<!-- Footer -->
+<footer class="bg-[#f5f3ee] dark:bg-[#121212] w-full py-12 px-8 border-t border-[#c4c7c7]/15">
+<div class="flex flex-col md:flex-row justify-between items-center max-w-screen-2xl mx-auto">
+<div class="mb-8 md:mb-0">
+<div class="text-lg font-serif text-black dark:text-white mb-2">Versa Editorial</div>
+<div class="font-['Work_Sans'] text-xs uppercase tracking-widest text-[#444748] dark:text-[#c4c7c7]">© 2024 Versa Editorial. All rights reserved.</div>
+</div>
+<div class="flex gap-10">
+<a class="font-['Work_Sans'] text-xs uppercase tracking-widest text-[#444748] hover:text-black transition-colors" href="#">About</a>
+<a class="font-['Work_Sans'] text-xs uppercase tracking-widest text-[#444748] hover:text-black transition-colors" href="#">Terms</a>
+<a class="font-['Work_Sans'] text-xs uppercase tracking-widest text-[#444748] hover:text-black transition-colors" href="#">Contact</a>
+</div>
+</div>
+</footer>
+</body></html>
