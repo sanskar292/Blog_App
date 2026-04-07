@@ -46,12 +46,14 @@ public class SecurityConfig {
                         // Auth endpoints — always public
                         .requestMatchers("/api/auth/**").permitAll()
 
-                        // Public GET endpoints
-                        .requestMatchers(HttpMethod.GET, "/api/articles/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/stories/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/poetry/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/comments/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/poetry-comments/**").permitAll()
+                        // Public GET endpoints — list BOTH the base path and /** wildcard
+                        // Spring Security 6 PathPatternParser: "/api/articles/**" does NOT
+                        // match "/api/articles" (no trailing slash), so both are required.
+                        .requestMatchers(HttpMethod.GET, "/api/articles", "/api/articles/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/stories", "/api/stories/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/poetry", "/api/poetry/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/comments", "/api/comments/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/poetry-comments", "/api/poetry-comments/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/*/articles").permitAll()
 
                         // Preflight OPTIONS — must be open or CORS breaks
