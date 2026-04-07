@@ -1,25 +1,15 @@
 package com.yellocode.some.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.*;
 
+/**
+ * WebConfig is intentionally left without CORS mappings.
+ * CORS is fully managed by SecurityConfig via CorsConfigurationSource,
+ * which ensures it is applied at the Spring Security filter level
+ * (before requests reach Spring MVC).
+ *
+ * DO NOT add addCorsMappings() here — it would conflict with SecurityConfig's CORS bean.
+ */
 @Configuration
 public class WebConfig {
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                        .allowedOrigins(
-                            "http://localhost:5173",
-                            "https://blog-app-jet-iota.vercel.app"
-                        )
-                        .allowedMethods("*")
-                        .allowedHeaders("*");
-            }
-        };
-    }
 }
