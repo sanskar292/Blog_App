@@ -6,15 +6,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -26,28 +31,81 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults())
+                // 1. CORS must be first — uses our CorsConfigurationSource bean below
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+                // 2. Disable CSRF — stateless JWT app doesn't need it
                 .csrf(AbstractHttpConfigurer::disable)
+
+                // 3. Stateless session — no HttpSession ever created
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // 4. Route-level authorization
                 .authorizeHttpRequests(auth -> auth
+                        // Auth endpoints — always public
                         .requestMatchers("/api/auth/**").permitAll()
+
+                        // Public GET endpoints
                         .requestMatchers(HttpMethod.GET, "/api/articles/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/stories/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/poetry/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/comments/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/poetry-comments/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/*/articles").permitAll()
+
+                        // Preflight OPTIONS — must be open or CORS breaks
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // Everything else requires a valid JWT
                         .anyRequest().authenticated()
                 )
+
+                // 5. JWT filter runs before username/password filter
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
+    /**
+     * Single source of truth for CORS.
+     * Defined here so Spring Security applies it at the filter level,
+     * before requests even reach Spring MVC.
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowedOrigins(List.of(
+                "http://localhost:5173",
+                "https://blog-app-jet-iota.vercel.app"
+        ));
+
+        config.setAllowedMethods(List.of(
+                "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
+        ));
+
+        // Allow all headers — including Authorization for JWT
+        config.setAllowedHeaders(List.of("*"));
+
+        // Expose Authorization header to frontend if needed
+        config.setExposedHeaders(List.of("Authorization"));
+
+        // Required for JWT cookies or Authorization header to be sent cross-origin
+        config.setAllowCredentials(true);
+
+        // Cache preflight response for 1 hour — reduces OPTIONS requests
+        config.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager(); // ← this is what was missing
+        return config.getAuthenticationManager();
     }
 
     @Bean
