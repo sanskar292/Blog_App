@@ -76,9 +76,13 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of(
+        // Use AllowedOriginPatterns to support Vercel preview URLs (*.vercel.app)
+        // while keeping credentials support enabled
+        config.setAllowedOriginPatterns(List.of(
                 "http://localhost:5173",
-                "https://blog-app-jet-iota.vercel.app"
+                "http://localhost:*",
+                "https://blog-app-jet-iota.vercel.app",
+                "https://*.vercel.app"          // covers all Vercel preview deploys
         ));
 
         config.setAllowedMethods(List.of(
