@@ -1,5 +1,6 @@
 package com.yellocode.some.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,5 +24,6 @@ public class PoetryComment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "poetry_id")
+    @JsonBackReference
     private Poetry poetry;
 }
