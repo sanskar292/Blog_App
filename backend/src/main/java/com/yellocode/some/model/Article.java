@@ -38,5 +38,5 @@ public class Article {
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<Comment> comments = new ArrayList<>();
+    private List<ArticleComment> comments = new ArrayList<>();
 }
