@@ -2,6 +2,7 @@ package com.yellocode.some.config;
 
 import com.yellocode.some.security.JwtFilter;
 import com.yellocode.some.service.CustomUserDetailsService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -26,13 +26,13 @@ import java.util.List;
 /**
  * Spring Security 6 configuration.
  *
- * Design decisions:
- *  - AntPathRequestMatcher is used explicitly to avoid the MvcRequestMatcher
- *    path-stripping bug present in Spring Security 6.x with Spring MVC.
- *  - DaoAuthenticationProvider is declared as an explicit bean so the
- *    AuthenticationManager uses our CustomUserDetailsService + BCrypt.
- *  - Stateless JWT — no session, no CSRF.
- *  - BCryptPasswordEncoder (same as before) → existing user passwords unchanged.
+ * Key design decision: public routes are identified via a plain Java lambda
+ * RequestMatcher that reads getRequestURI() and getMethod() directly.
+ * This bypasses ALL Spring path-matching infrastructure (MvcRequestMatcher,
+ * AntPathRequestMatcher, PathPatternParser) and cannot be affected by
+ * Spring Security 6.x path-matching changes or servlet-dispatcher quirks.
+ *
+ * Existing users are unaffected: same BCryptPasswordEncoder, same DB schema.
  */
 @Configuration
 @EnableWebSecurity
@@ -46,7 +46,9 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
-    // ── Security filter chain ─────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // Filter chain
+    // ─────────────────────────────────────────────────────────────────────────
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -57,48 +59,84 @@ public class SecurityConfig {
             .authenticationProvider(authenticationProvider())
 
             .authorizeHttpRequests(auth -> auth
-
-                // ── Public: auth endpoints ────────────────────────────────
-                .requestMatchers(
-                    new AntPathRequestMatcher("/api/auth/register", "POST"),
-                    new AntPathRequestMatcher("/api/auth/login",    "POST")
-                ).permitAll()
-
-                // ── Public: read-only content ─────────────────────────────
-                // Two matchers per resource: base path + sub-paths
-                .requestMatchers(
-                    new AntPathRequestMatcher("/api/articles",    "GET"),
-                    new AntPathRequestMatcher("/api/articles/**", "GET"),
-                    new AntPathRequestMatcher("/api/stories",     "GET"),
-                    new AntPathRequestMatcher("/api/stories/**",  "GET"),
-                    new AntPathRequestMatcher("/api/poetry",      "GET"),
-                    new AntPathRequestMatcher("/api/poetry/**",   "GET"),
-                    new AntPathRequestMatcher("/api/comments",    "GET"),
-                    new AntPathRequestMatcher("/api/comments/**", "GET"),
-                    new AntPathRequestMatcher("/api/poetry-comments",    "GET"),
-                    new AntPathRequestMatcher("/api/poetry-comments/**", "GET"),
-                    new AntPathRequestMatcher("/api/users/*/articles",   "GET")
-                ).permitAll()
-
-                // ── Public: CORS preflight ────────────────────────────────
-                .requestMatchers(new AntPathRequestMatcher("/**", "OPTIONS")).permitAll()
-
-                // ── Everything else requires a valid JWT ──────────────────
+                // Lambda RequestMatcher: pure Java string matching.
+                // Does NOT use MvcRequestMatcher or AntPathRequestMatcher.
+                .requestMatchers(SecurityConfig::isPublicRequest).permitAll()
                 .anyRequest().authenticated()
             )
 
-            // JWT filter runs before Spring's own UsernamePasswordAuthenticationFilter
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // ── Authentication ────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // Public route matcher — plain Java, no Spring path matching
+    // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Explicit DaoAuthenticationProvider so Spring knows exactly which
-     * UserDetailsService and PasswordEncoder to use, with no ambiguity.
+     * Returns true for requests that do NOT require a JWT.
+     *
+     * Uses getRequestURI() (not getServletPath()) so it works regardless
+     * of how the DispatcherServlet is mapped.  Any context-path prefix is
+     * stripped before comparison.
      */
+    private static boolean isPublicRequest(HttpServletRequest req) {
+        String method = req.getMethod();
+        if (method == null) return false;
+
+        // Strip context path if present
+        String ctx  = req.getContextPath();          // usually ""
+        String uri  = req.getRequestURI();           // "/api/articles"
+        String path = (ctx != null && !ctx.isEmpty() && uri.startsWith(ctx))
+                      ? uri.substring(ctx.length())
+                      : uri;
+
+        // ── OPTIONS (CORS preflight) ────────────────────────────────────────
+        if ("OPTIONS".equals(method)) return true;
+
+        // ── Auth endpoints (POST only) ──────────────────────────────────────
+        if ("POST".equals(method)) {
+            return path.equals("/api/auth/login")
+                || path.equals("/api/auth/register");
+        }
+
+        // ── Public read-only (GET only) ─────────────────────────────────────
+        if ("GET".equals(method)) {
+            // Health check — used to verify deployment
+            if (path.equals("/api/health")) return true;
+
+            // Articles
+            if (path.equals("/api/articles"))            return true;
+            if (path.startsWith("/api/articles/"))       return true;
+
+            // Stories
+            if (path.equals("/api/stories"))             return true;
+            if (path.startsWith("/api/stories/"))        return true;
+
+            // Poetry
+            if (path.equals("/api/poetry"))              return true;
+            if (path.startsWith("/api/poetry/"))         return true;
+
+            // Comments
+            if (path.equals("/api/comments"))            return true;
+            if (path.startsWith("/api/comments/"))       return true;
+
+            // Poetry comments
+            if (path.equals("/api/poetry-comments"))     return true;
+            if (path.startsWith("/api/poetry-comments/")) return true;
+
+            // User article listings  e.g. /api/users/bob/articles
+            if (path.matches("/api/users/[^/]+/articles")) return true;
+        }
+
+        return false;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Auth / password beans
+    // ─────────────────────────────────────────────────────────────────────────
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -108,33 +146,35 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration cfg)
             throws Exception {
-        return config.getAuthenticationManager();
+        return cfg.getAuthenticationManager();
     }
 
     /**
-     * BCryptPasswordEncoder — same as before, so ALL existing user
-     * passwords in the database continue to work without migration.
+     * BCryptPasswordEncoder — identical to the original.
+     * Existing BCrypt hashes in the database are fully compatible.
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // ── CORS ──────────────────────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // CORS
+    // ─────────────────────────────────────────────────────────────────────────
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // setAllowedOriginPatterns + allowCredentials(true) is the correct combo
-        // for wildcard origins (setAllowedOrigins("*") is banned when credentials = true)
+        // setAllowedOriginPatterns + allowCredentials(true) is the correct way
+        // to support wildcards — setAllowedOrigins("*") is banned with credentials.
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:5173",
                 "http://localhost:*",
                 "https://blog-app-jet-iota.vercel.app",
-                "https://*.vercel.app"          // all Vercel preview URLs
+                "https://*.vercel.app"
         ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
