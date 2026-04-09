@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { fetchArticles, fetchPoems, fetchStories } from "../api";
 import { getThumbnail, handleImageError } from "../utils/imageUtils";
 import "./Home.css";
+import MobileSidebar from "../components/MobileSidebar";
 
 const stripHtml = (html) => {
   const tmp = document.createElement("div");
@@ -24,6 +25,7 @@ function Home() {
   const [error, setError] = useState(null);
   const [activeFilter, setActiveFilter] = useState("all");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
 
   const loadData = useCallback(async (filter) => {
     setLoading(true);
@@ -61,6 +63,16 @@ function Home() {
   useEffect(() => {
     loadData(activeFilter);
   }, [activeFilter, loadData]);
+
+  // Listen for custom event to open mobile sidebar from Navbar
+  useEffect(() => {
+    const handleOpenMobileSidebar = () => {
+      setShowMobileSidebar(true);
+    };
+    
+    window.addEventListener('openMobileSidebar', handleOpenMobileSidebar);
+    return () => window.removeEventListener('openMobileSidebar', handleOpenMobileSidebar);
+  }, []);
 
   const renderArticle = (article) => (
     <article key={article.id} className="feed-item">
@@ -155,6 +167,13 @@ function Home() {
 
   return (
     <div className="home-container">
+      <MobileSidebar 
+        isOpen={showMobileSidebar} 
+        onClose={() => setShowMobileSidebar(false)}
+        activeFilter={activeFilter}
+        onFilterChange={setActiveFilter}
+      />
+      
       <div className={`home-layout ${isSidebarOpen ? '' : 'layout-focused'}`}>
         
         {/* Floating Toggle Button */}

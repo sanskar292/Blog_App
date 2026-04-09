@@ -3,7 +3,6 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { getLoggedInUser } from "../api";
 import "./Navbar.css"
 
-
 function AppNavbar() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -11,6 +10,11 @@ function AppNavbar() {
   const [showWriteDropdown, setShowWriteDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const token = localStorage.getItem("token");
+
+  // Dispatch custom event to open mobile sidebar
+  const handleMobileMenuClick = () => {
+    window.dispatchEvent(new CustomEvent('openMobileSidebar'));
+  };
 
   useEffect(() => {
     setUsername(getLoggedInUser());
@@ -40,9 +44,17 @@ function AppNavbar() {
 
   return (
     <>
-    
       <nav className="navbar" role="navigation" aria-label="Main navigation">
         <div className="navbar-inner">
+          {/* Mobile Menu Button */}
+          <button 
+            className="navbar-mobile-menu-btn" 
+            onClick={handleMobileMenuClick}
+            aria-label="Open menu"
+          >
+            <span className="material-symbols-outlined">menu</span>
+          </button>
+
           {/* Logo */}
           <Link to="/home" className="navbar-logo">
             Versa
