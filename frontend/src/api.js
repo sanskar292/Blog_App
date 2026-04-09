@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
- baseURL: "https://blogapp-backend-amwi.onrender.com/api",
+ baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080/api",
 });
 
 // Attach JWT token
@@ -42,7 +42,7 @@ export const createComment = (articleId, content) => API.post(`/comments/${artic
 
 // USERS
 export const fetchUserProfile = () => API.get("/users/profile");
-export const fetchUserArticles = (username, page = 0, size = 5) => API.get(`/users/${username}/posts?page=${page}&size=${size}`);
+export const fetchUserArticles = (username, page = 0, size = 5) => API.get(`/users/${username}/articles?page=${page}&size=${size}`);
 
 // POETRY
 export const fetchPoems = (page = 0, size = 6) => API.get(`/poetry?page=${page}&size=${size}`);
