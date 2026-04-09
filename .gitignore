@@ -26,6 +26,9 @@ bin/
 # VS Code
 .vscode/
 
+# Qwen
+.qwen/
+
 # Spring Boot application secrets — NEVER commit these
 **/application-prod.properties
 **/application-local.properties
