@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchPoems, getLoggedInUser } from '../../api';
+import ScrollFloat from '../../components/ScrollFloat';
 import './PoetryHome.css';
 
 const PoetryHome = () => {
-  const [darkMode, setDarkMode] = useState(true);
   const [featuredPoem, setFeaturedPoem] = useState(null);
   const [recentPoems, setRecentPoems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,8 +16,6 @@ const PoetryHome = () => {
       try {
         const { data } = await fetchPoems(0, 13);
         const poems = data.content || [];
-
-        // First poem becomes featured, next 12 for 3x4 grid
         if (poems.length > 0) {
           setFeaturedPoem(poems[0]);
           setRecentPoems(poems.slice(1, 13));
@@ -28,36 +26,8 @@ const PoetryHome = () => {
         setLoading(false);
       }
     };
-
     loadPoems();
   }, []);
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
-
-  const getInitials = (name) => {
-    if (!name) return '?';
-    return name
-      .split(' ')
-      .map(n => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  const getTimeAgo = (dateStr) => {
-    if (!dateStr) return '';
-    const now = new Date();
-    const date = new Date(dateStr);
-    const minutes = Math.floor((now - date) / 60000);
-    
-    if (minutes < 60) return `${minutes} min ago`;
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h ago`;
-    const days = Math.floor(hours / 24);
-    return `${days}d ago`;
-  };
 
   const stripHtml = (html) => {
     const tmp = document.createElement('div');
@@ -66,178 +36,247 @@ const PoetryHome = () => {
   };
 
   return (
-    <div className={`${darkMode ? 'dark' : 'light'} poetry-app`}>
-      {/* Top Navigation */}
-      <header className="top-nav">
-        <nav className="nav-container">
-          <div className="logo">Celestial Scribe</div>
-          <div className="nav-links">
-            <Link to="/poetry" className="nav-link active">Discover</Link>
-            {currentUser && (
-              <Link to="/poetry/create" className="nav-link">Write</Link>
+    <div className="poetry-home">
+      {/* Notebook lines background */}
+      <div className="nb-lines" />
+      <div className="nb-margin-line" />
+      <div className="nb-spiral" />
+
+      {/* ===== Header ===== */}
+      <header className="nb-header">
+        <div className="nb-header-inner">
+          <Link to="/" className="nb-logo">
+            <span className="nb-logo-doodle">✦</span>
+            Celestial Scribe
+          </Link>
+          <nav className="nb-nav">
+            <Link to="/poetry" className="nb-nav-link active">Discover</Link>
+            {currentUser && <Link to="/poetry/create" className="nb-nav-link">Write</Link>}
+            <Link to="/search" className="nb-nav-link">Search</Link>
+          </nav>
+          <div className="nb-header-actions">
+            {currentUser ? (
+              <Link to="/profile" className="nb-avatar">
+                {currentUser.username?.charAt(0).toUpperCase() || '?'}
+              </Link>
+            ) : (
+              <>
+                <Link to="/login" className="nb-link-ghost">Log in</Link>
+                <Link to="/register" className="nb-link-filled">Sign up</Link>
+              </>
             )}
           </div>
-          <div className="nav-actions">
-            <Link to="/search" className="material-symbols-outlined icon">search</Link>
-            <button
-              className="material-symbols-outlined icon dark-toggle"
-              onClick={toggleDarkMode}
-            >
-              {darkMode ? 'light_mode' : 'dark_mode'}
-            </button>
-          </div>
-        </nav>
+        </div>
       </header>
 
-      <main className="main-content">
+      <main className="nb-main">
+        {/* ===== Hero - Pinned Note ===== */}
         {loading ? (
-          <section className="hero-section">
-            <div className="hero-overlay"></div>
-            <div className="hero-content">
-              <div className="hero-badge">Loading...</div>
+          <div className="nb-hero nb-hero-loading">
+            <div className="nb-note nb-note-large">
+              <div className="nb-tape nb-tape-left" />
+              <div className="nb-skeleton-block" />
+              <div className="nb-skeleton-line" />
+              <div className="nb-skeleton-line short" />
             </div>
-          </section>
+          </div>
         ) : featuredPoem ? (
-          /* Hero: Featured Poem */
-          <section className="hero-section">
-            {featuredPoem.imageUrl && (
-              <div className="hero-thumbnail-container">
-                <img
-                  src={featuredPoem.imageUrl}
-                  alt={featuredPoem.title}
-                  className="hero-thumbnail"
-                />
-                <div className="hero-vignette-left"></div>
-                <div className="hero-vignette-right"></div>
-              </div>
-            )}
-            <div className="hero-overlay"></div>
-            <div className="hero-content">
-              <div className="hero-badge">Featured Poem</div>
-              <h1 className="hero-title">{featuredPoem.title}</h1>
-              <p className="hero-quote">
-                "{stripHtml(featuredPoem.content).substring(0, 100)}..."
-              </p>
-              <div className="hero-actions">
-                <button
-                  className="btn btn-primary"
-                  onClick={() => navigate(`/poetry/${featuredPoem.id}`)}
-                >
-                  Read More
-                </button>
-                <button className="btn btn-secondary">Save to Library</button>
+          <div className="nb-hero">
+            <div className="nb-note nb-note-large">
+              <div className="nb-tape nb-tape-left" />
+              <div className="nb-tape nb-tape-right" />
+              <span className="nb-pin" />
+              <div className="nb-note-inner">
+                <div className="nb-note-content">
+                  <span className="nb-tag">featured</span>
+                  <h1 className="nb-hero-title">{featuredPoem.title}</h1>
+                  <p className="nb-hero-excerpt">
+                    {stripHtml(featuredPoem.content).substring(0, 200)}...
+                  </p>
+                  <div className="nb-note-footer">
+                    <span className="nb-note-author">— {featuredPoem.author}</span>
+                    <div className="nb-note-actions">
+                      <button
+                        className="nb-btn nb-btn-ink"
+                        onClick={() => navigate(`/poetry/${featuredPoem.id}`)}
+                      >
+                        Read →
+                      </button>
+                      <button className="nb-btn nb-btn-sketch">Save</button>
+                    </div>
+                  </div>
+                </div>
+                {featuredPoem.imageUrl && (
+                  <div className="nb-note-photo">
+                    <img src={featuredPoem.imageUrl} alt={featuredPoem.title} />
+                    <div className="nb-photo-frame" />
+                  </div>
+                )}
               </div>
             </div>
-          </section>
+          </div>
         ) : (
-          /* Hero: No poems available */
-          <section className="hero-section">
-            <div className="hero-overlay"></div>
-            <div className="hero-content">
-              <div className="hero-badge">Welcome</div>
-              <h1 className="hero-title">Celestial Scribe</h1>
-              <p className="hero-quote">
-                "Where words become stars and verses light the cosmos."
-              </p>
-              <div className="hero-actions">
+          <div className="nb-hero nb-hero-empty">
+            <div className="nb-note nb-note-large">
+              <div className="nb-tape nb-tape-left" />
+              <div className="nb-note-inner">
+                <span className="nb-tag">welcome</span>
+                <h1 className="nb-hero-title">Celestial Scribe</h1>
+                <p className="nb-hero-excerpt">
+                  Where words become stars and verses light the cosmos.
+                </p>
                 {currentUser && (
-                  <Link to="/poetry/create" className="btn btn-primary">
+                  <Link to="/poetry/create" className="nb-btn nb-btn-ink">
                     Write Your First Poem
                   </Link>
                 )}
               </div>
             </div>
-          </section>
+          </div>
         )}
 
-        {/* Discovery Masonry Grid */}
-        <section className="gallery-section">
-          <div className="gallery-header">
-            <div>
-              <span className="gallery-subtitle">Unveiling the Nocturne</span>
-              <h2 className="gallery-title">The Celestial Gallery</h2>
-            </div>
-            <div className="gallery-filters">
-              <button className="filter-btn active">Featured</button>
-            </div>
+        {/* ===== Gallery Section ===== */}
+        <section className="nb-gallery">
+          <div className="nb-gallery-header">
+            <p className="nb-subtitle">unveiling the nocturne</p>
+            <ScrollFloat
+              animationDuration={1}
+              ease="back.inOut(2)"
+              scrollStart="center bottom+=30%"
+              scrollEnd="bottom bottom-=30%"
+              stagger={0.03}
+              containerClassName="nb-scroll-title"
+              textClassName="nb-scroll-text"
+            >
+              The Celestial Gallery
+            </ScrollFloat>
+            <div className="nb-doodle-divider">~ ~ ~ ~ ~</div>
           </div>
 
           {recentPoems.length > 0 ? (
-            <div className="masonry-grid">
-              {recentPoems.map((poem) => (
-                <article
-                  key={poem.id}
-                  className="poem-card"
-                  onClick={() => navigate(`/poetry/${poem.id}`)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {poem.imageUrl ? (
-                    <div className="poem-card-thumbnail">
-                      <img src={poem.imageUrl} alt={poem.title} loading="lazy" />
-                      <div className="poem-card-overlay">
-                        <div className="poem-card-hover-content">
-                          <h3 className="poem-card-title-overlay">{poem.title}</h3>
-                          <p className="poem-card-author-overlay">by {poem.author}</p>
-                        </div>
+            <>
+              {/* Featured note - full width */}
+              {recentPoems[0] && (
+                <div className="nb-note nb-note-featured">
+                  <div className="nb-tape nb-tape-center" />
+                  <div className="nb-note-inner nb-note-inner-wide">
+                    <div className="nb-note-content">
+                      <span className="nb-tag">featured</span>
+                      <h3 className="nb-card-title-lg">{recentPoems[0].title}</h3>
+                      <p className="nb-card-author">by {recentPoems[0].author}</p>
+                      <p className="nb-card-excerpt-lg">
+                        {stripHtml(recentPoems[0].content).substring(0, 180)}...
+                      </p>
+                      <button
+                        className="nb-btn nb-btn-ink"
+                        onClick={() => navigate(`/poetry/${recentPoems[0].id}`)}
+                      >
+                        Read →
+                      </button>
+                    </div>
+                    {recentPoems[0].imageUrl && (
+                      <div className="nb-card-photo">
+                        <img src={recentPoems[0].imageUrl} alt={recentPoems[0].title} />
                       </div>
-                    </div>
-                  ) : (
-                    <div className="poem-card-content">
-                      <h3 className="poem-card-title">{poem.title}</h3>
-                      <p className="poem-card-author">by {poem.author}</p>
-                      <p className="poem-card-excerpt">{stripHtml(poem.content).substring(0, 100)}...</p>
-                    </div>
-                  )}
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="gallery-empty">
-              <p>No poems have been published yet.</p>
-              {currentUser && (
-                <Link to="/poetry/create" className="btn btn-primary">
-                  Create the First Poem
-                </Link>
+                    )}
+                  </div>
+                </div>
               )}
+
+              {/* Grid of small notes */}
+              <div className="nb-notes-grid">
+                {recentPoems.slice(1).map((poem, i) => (
+                  <div
+                    key={poem.id}
+                    className="nb-note nb-note-small"
+                    style={{
+                      transform: `rotate(${(i % 2 === 0 ? -1 : 1) * (0.5 + Math.random() * 1.5)}deg)`
+                    }}
+                    onClick={() => navigate(`/poetry/${poem.id}`)}
+                  >
+                    {poem.imageUrl && (
+                      <div className="nb-note-small-photo">
+                        <img src={poem.imageUrl} alt={poem.title} />
+                      </div>
+                    )}
+                    <div className="nb-note-small-content">
+                      <h3 className="nb-card-title">{poem.title}</h3>
+                      <p className="nb-card-author">by {poem.author}</p>
+                      <p className="nb-card-excerpt">
+                        {stripHtml(poem.content).substring(0, 90)}...
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="nb-note nb-note-empty">
+              <div className="nb-tape nb-tape-center" />
+              <div className="nb-note-inner">
+                <div className="nb-empty-icon">✎</div>
+                <h3 className="nb-empty-title">No poems yet</h3>
+                <p className="nb-empty-text">Be the first to write something beautiful.</p>
+                {currentUser && (
+                  <Link to="/poetry/create" className="nb-btn nb-btn-ink">
+                    Write Your First Poem
+                  </Link>
+                )}
+              </div>
             </div>
           )}
 
-          {/* More Content Loader */}
-          <div className="load-more-section">
-            <div className="load-more-divider"></div>
-            <button className="load-more-btn" onClick={() => navigate('/poetry')}>
-              Load More Poems
-            </button>
-          </div>
+          {recentPoems.length > 0 && (
+            <div className="nb-gallery-footer">
+              <button className="nb-btn nb-btn-dots" onClick={() => navigate('/poetry')}>
+                · · · more poems · · ·
+              </button>
+            </div>
+          )}
         </section>
 
-        {/* CTA Section */}
+        {/* ===== CTA Section ===== */}
         {!currentUser && (
-          <section className="cta-section">
-            <div className="cta-content">
-              <h2 className="cta-title">Your celestial journey awaits the ink.</h2>
-              <p className="cta-description">
-                Join the circle of scribes and let your verses find their place among the stars.
-              </p>
-              <Link to="/register" className="btn btn-cta">
-                Begin Writing
-              </Link>
+          <section className="nb-cta">
+            <div className="nb-note nb-note-cta">
+              <div className="nb-tape nb-tape-center" />
+              <div className="nb-note-inner">
+                <ScrollFloat
+                  animationDuration={1.2}
+                  ease="back.inOut(2)"
+                  scrollStart="center bottom+=20%"
+                  scrollEnd="bottom bottom-=20%"
+                  stagger={0.025}
+                  containerClassName="nb-scroll-title nb-scroll-cta"
+                  textClassName="nb-scroll-text"
+                >
+                  Your celestial journey awaits the ink
+                </ScrollFloat>
+                <p className="nb-cta-text">
+                  Join the circle of scribes and let your verses find their place among the stars.
+                </p>
+                <Link to="/register" className="nb-btn nb-btn-ink nb-btn-lg">
+                  ✦ Begin Writing
+                </Link>
+              </div>
             </div>
           </section>
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="footer-text">© 2024 Celestial Scribe. All rights reserved.</div>
-        <div className="footer-links">
-          <a href="#">Manifesto</a>
-          <a href="#">Terms</a>
-          <a href="#">Privacy</a>
-        </div>
-        <div className="footer-icons">
-          <span className="material-symbols-outlined icon">auto_awesome</span>
-          <span className="material-symbols-outlined icon">history_edu</span>
+      {/* ===== Footer ===== */}
+      <footer className="nb-footer">
+        <div className="nb-footer-doodle">~ ~ ~</div>
+        <div className="nb-footer-inner">
+          <span className="nb-footer-brand">
+            <span className="nb-logo-doodle">✦</span> Celestial Scribe
+          </span>
+          <div className="nb-footer-links">
+            <a href="#">Manifesto</a>
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+          </div>
+          <span className="nb-footer-copy">© 2024 Celestial Scribe</span>
         </div>
       </footer>
     </div>
