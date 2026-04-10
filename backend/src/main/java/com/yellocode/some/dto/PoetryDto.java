@@ -10,5 +10,6 @@ public class PoetryDto {
     private String title;
     private String content;
     private String mood;
+    private String imageUrl;
     private List<String> tags;
 }

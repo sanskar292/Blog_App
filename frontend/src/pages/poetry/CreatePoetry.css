@@ -317,3 +317,23 @@
       margin-bottom: 36px;
     }
   }
+
+  /* Image Preview */
+  .image-preview {
+    margin-top: 12px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--poetry-border);
+    max-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(124, 92, 184, 0.05);
+  }
+
+  .image-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    display: block;
+  }

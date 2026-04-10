@@ -42,6 +42,7 @@ public class PoetryController {
         poetry.setTitle(dto.getTitle());
         poetry.setContent(dto.getContent());
         poetry.setMood(dto.getMood());
+        poetry.setImageUrl(dto.getImageUrl());
         poetry.setTags(dto.getTags() != null ? dto.getTags() : new ArrayList<>());
         poetry.setAuthor(auth.getName());
         poetry.setPublished(true);
@@ -63,6 +64,7 @@ public class PoetryController {
         existing.setTitle(dto.getTitle());
         existing.setContent(dto.getContent());
         existing.setMood(dto.getMood());
+        existing.setImageUrl(dto.getImageUrl());
         existing.setTags(dto.getTags() != null ? dto.getTags() : new ArrayList<>());
         existing.setUpdatedAt(LocalDateTime.now());
         return ResponseEntity.ok(poetryService.updatePoem(id, existing));

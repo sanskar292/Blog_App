@@ -12,6 +12,7 @@ function CreatePoetry() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [mood, setMood] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -62,6 +63,7 @@ function CreatePoetry() {
         title: title.trim(),
         content: content.trim(),
         mood: mood.trim() || null,
+        imageUrl: imageUrl.trim() || null,
         tags,
       });
       navigate("/poetry");
@@ -110,6 +112,23 @@ function CreatePoetry() {
               onChange={(e) => setMood(e.target.value)}
               autoComplete="off"
             />
+          </div>
+
+          {/* Thumbnail Image URL */}
+          <div className="create-poetry-field">
+            <label className="create-poetry-field-label">Thumbnail Image (optional)</label>
+            <input
+              className="create-poetry-input"
+              placeholder="https://example.com/image.jpg"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              autoComplete="off"
+            />
+            {imageUrl && (
+              <div className="image-preview">
+                <img src={imageUrl} alt="Preview" onError={(e) => e.target.style.display = 'none'} />
+              </div>
+            )}
           </div>
 
           {/* Title */}

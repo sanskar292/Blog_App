@@ -31,6 +31,8 @@ public class Poetry {
 
     private String mood;
 
+    private String imageUrl;
+
     @ElementCollection
     @CollectionTable(name = "poetry_tags", joinColumns = @JoinColumn(name = "poetry_id"))
     @Column(name = "tag")

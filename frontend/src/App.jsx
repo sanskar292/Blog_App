@@ -6,7 +6,7 @@ import Articles from "./pages/article/Articles";
 import ArticleDetails from "./pages/article/ArticleDetails";
 import CreateArticle from "./pages/article/CreateArticle";
 import EditArticle from "./pages/article/EditArticle";
-import PoetryList from "./pages/poetry/PoetryList";
+import PoetryHome from "./pages/poetry/PoetryHome";
 import PoetryDetails from "./pages/poetry/PoetryDetails";
 import CreatePoetry from "./pages/poetry/CreatePoetry";
 import Stories from "./pages/story/Stories";
@@ -26,7 +26,7 @@ function App() {
         <Route path="/article/:id" element={<Layout><ArticleDetails /></Layout>} />
         <Route path="/article/edit/:id" element={<EditArticle />} />
         <Route path="/create" element={<CreateArticle />} />
-        <Route path="/poetry" element={<Layout><PoetryList /></Layout>} />
+        <Route path="/poetry" element={<PoetryHome />} />
         <Route path="/poetry/:id" element={<Layout><PoetryDetails /></Layout>} />
         <Route path="/poetry/create" element={<Layout><CreatePoetry /></Layout>} />
         <Route path="/stories" element={<Layout><Stories /></Layout>} />
